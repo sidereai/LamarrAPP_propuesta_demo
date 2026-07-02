@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+<title>LAMARR App · Propuesta en slides · Sidere AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --card: #ffffff;
+  --ring: #3b82f6;
+  --input: #e5e7eb;
+  --muted: #f9fafb;
+  --accent: #e0f2fe;
+  --border: #e5e7eb;
+  --radius: 0.375rem;
+  --chart-1: #3b82f6;
+  --chart-2: #2563eb;
+  --chart-3: #1d4ed8;
+  --chart-4: #1e40af;
+  --chart-5: #1e3a8a;
+  --popover: #ffffff;
+  --primary: #3b82f6;
+  --sidebar: #f9fafb;
+  --font-mono: "JetBrains Mono", monospace;
+  --font-sans: "Inter", sans-serif;
+  --secondary: #f3f4f6;
+  --background: #ffffff;
+  --foreground: #333333;
+  --destructive: #ef4444;
+  --muted-foreground: #6b7280;
+  --accent-foreground: #1e3a8a;
+  --secondary-foreground: #4b5563;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  font-family: var(--font-sans); color: var(--foreground); background: var(--muted);
+  -webkit-font-smoothing: antialiased; overflow: hidden;
+}
+h1,h2,h3,h4 { color: var(--chart-5); font-weight: 800; letter-spacing: -0.02em; line-height: 1.12; }
+
+/* ---------- DECK SHELL ---------- */
+.deck { position: fixed; inset: 0; }
+.slide {
+  position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center;
+  padding: 68px clamp(24px, 6vw, 96px) 96px;
+  opacity: 0; visibility: hidden; transform: translateY(18px) scale(.99);
+  transition: opacity .5s ease, transform .5s ease, visibility .5s;
+  overflow-y: auto;
+}
+.slide.active { opacity: 1; visibility: visible; transform: none; }
+.slide-inner { width: 100%; max-width: 1080px; margin: 0 auto; }
+
+.eyebrow {
+  display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--primary); background: var(--accent);
+  padding: 5px 12px; border-radius: 999px; margin-bottom: 16px;
+}
+.s-title { font-size: clamp(1.7rem, 3.6vw, 2.7rem); margin-bottom: 12px; }
+.s-lead { font-size: clamp(1rem, 1.5vw, 1.15rem); color: var(--muted-foreground); max-width: 760px; }
+
+/* progress + chrome */
+.topbar { position: fixed; top: 0; left: 0; right: 0; height: 52px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 40; background: rgba(255,255,255,.7); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); }
+.brand { display: flex; align-items: center; gap: 9px; font-weight: 800; color: var(--chart-5); font-size: .95rem; }
+.brand .logo { width: 26px; height: 26px; border-radius: 7px; background: linear-gradient(135deg,var(--chart-1),var(--chart-5)); display: grid; place-items: center; color: #fff; font-weight: 900; font-size: .72rem; }
+.topbar .doc { font-size: .78rem; color: var(--muted-foreground); }
+.demo-link { display: inline-flex; align-items: center; gap: 7px; font-size: .8rem; font-weight: 700; color: #fff; text-decoration: none; background: linear-gradient(120deg,var(--chart-1),var(--chart-5)); padding: 7px 15px; border-radius: 999px; box-shadow: 0 5px 14px rgba(59,130,246,.3); position: relative; }
+.demo-link::after { content:""; position:absolute; inset:0; border-radius:999px; animation: dpulse 2.2s infinite; }
+@keyframes dpulse { 0%{box-shadow:0 0 0 0 rgba(59,130,246,.45)} 70%{box-shadow:0 0 0 9px rgba(59,130,246,0)} 100%{box-shadow:0 0 0 0 rgba(59,130,246,0)} }
+.demo-link:hover { transform: translateY(-1px); }
+.pbar { position: fixed; top: 52px; left: 0; height: 3px; background: var(--primary); z-index: 41; width: 0; transition: width .4s ease; }
+
+/* bottom controls */
+.controls { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 40; background: rgba(255,255,255,.8); backdrop-filter: blur(8px); border-top: 1px solid var(--border); }
+.dots { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; flex: 1; }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: #cdd7e5; border: none; cursor: pointer; padding: 0; transition: transform .2s, background .2s; }
+.dot:hover { background: #9db4d8; }
+.dot.on { background: var(--primary); transform: scale(1.35); }
+.navbtn { display: inline-flex; align-items: center; gap: 6px; background: #fff; border: 1px solid var(--border); color: var(--chart-5); font-weight: 600; font-size: .85rem; padding: 9px 16px; border-radius: var(--radius); cursor: pointer; transition: .2s; white-space: nowrap; }
+.navbtn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+.navbtn:disabled { opacity: .38; cursor: default; }
+.navbtn.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+.navbtn.primary:hover { background: var(--chart-3); }
+.counter-badge { font-size: .78rem; font-family: var(--font-mono); color: var(--muted-foreground); min-width: 46px; text-align: center; }
+@media (max-width: 640px){ .dots { display: none; } }
+
+/* ---------- SHARED UI ---------- */
+.grid { display: grid; gap: 16px; }
+.g2 { grid-template-columns: repeat(2,1fr); }
+.g3 { grid-template-columns: repeat(3,1fr); }
+.g4 { grid-template-columns: repeat(4,1fr); }
+@media (max-width: 820px){ .g2,.g3,.g4 { grid-template-columns: 1fr; } }
+.card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+.card h3 { font-size: 1.05rem; margin-bottom: 6px; }
+.card p { font-size: .9rem; color: var(--muted-foreground); }
+.kbig { font-size: 1.9rem; font-weight: 900; color: var(--primary); line-height: 1; }
+.klbl { font-size: .82rem; color: var(--muted-foreground); margin-top: 6px; }
+.pill { display: inline-block; background: var(--accent); color: var(--accent-foreground); font-weight: 600; font-size: .76rem; padding: 3px 10px; border-radius: 999px; }
+.mono { font-family: var(--font-mono); }
+
+/* fade children */
+.slide.active .fx { animation: rise .55s both; }
+.slide.active .fx.d1 { animation-delay: .07s; }
+.slide.active .fx.d2 { animation-delay: .14s; }
+.slide.active .fx.d3 { animation-delay: .21s; }
+.slide.active .fx.d4 { animation-delay: .28s; }
+.slide.active .fx.d5 { animation-delay: .35s; }
+@keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+
+/* ---------- TITLE SLIDE ---------- */
+.title-slide { text-align: left; }
+.title-slide .badge { display: inline-flex; align-items: center; gap: 8px; font-size: .8rem; font-weight: 600; color: var(--accent-foreground); background: #fff; border: 1px solid var(--border); padding: 7px 14px; border-radius: 999px; margin-bottom: 24px; }
+.title-slide .badge .dot2 { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 0 4px rgba(59,130,246,.18); }
+.title-slide h1 { font-size: clamp(2.1rem, 5.2vw, 3.8rem); font-weight: 900; letter-spacing: -.03em; }
+.title-slide h1 .grad { background: linear-gradient(120deg,var(--chart-1),var(--chart-5)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.title-slide .sub { font-size: 1.15rem; color: var(--secondary-foreground); max-width: 640px; margin: 18px 0 28px; }
+.meta-row { display: flex; gap: 30px; flex-wrap: wrap; margin-top: 10px; }
+.meta-row div span { display: block; }
+.meta-row .k { font-size: .74rem; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: .06em; }
+.meta-row .v { font-size: 1rem; font-weight: 700; color: var(--chart-5); }
+.hint { position: absolute; bottom: 76px; left: 50%; transform: translateX(-50%); font-size: .78rem; color: var(--muted-foreground); display: flex; align-items: center; gap: 8px; }
+.kbd { font-family: var(--font-mono); font-size: .72rem; background: #fff; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 5px; padding: 2px 7px; color: var(--secondary-foreground); }
+
+/* ---------- FLOWCHART ---------- */
+.flow-wrap { margin-top: 18px; }
+.flow {
+  display: flex; align-items: flex-start; gap: 0; overflow-x: auto; padding: 8px 2px 14px;
+}
+.fnode {
+  position: relative; flex: 0 0 auto; width: 168px; background: #fff; border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px; border-top: 3px solid var(--primary); transition: box-shadow .2s, border-color .2s, transform .2s;
+}
+.fnode.has-detail { cursor: pointer; padding-bottom: 30px; }
+.fnode.has-detail:hover { box-shadow: 0 10px 24px rgba(30,58,138,.09); transform: translateY(-2px); }
+.fnode.open { border-color: #bcd3f7; box-shadow: 0 12px 28px rgba(30,58,138,.1); }
+.fnode .ph { font-size: .68rem; font-weight: 700; color: var(--primary); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .04em; }
+.fnode h4 { font-size: .95rem; margin: 4px 0 4px; }
+.fnode p { font-size: .74rem; color: var(--muted-foreground); line-height: 1.4; }
+.fnode .when { font-size: .68rem; color: var(--muted-foreground); margin-top: 8px; font-family: var(--font-mono); }
+.fnode .expand { position: absolute; bottom: 9px; left: 14px; display: inline-flex; align-items: center; gap: 5px; font-size: .64rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: .04em; }
+.fnode .expand svg { width: 13px; height: 13px; transition: transform .25s; }
+.fnode.open .expand svg { transform: rotate(180deg); }
+.fnode .expand .lbl-more { display: inline; }
+.fnode.open .expand .lbl-more { display: none; }
+.fnode .expand .lbl-less { display: none; }
+.fnode.open .expand .lbl-less { display: inline; }
+.fdetail { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s ease; }
+.fnode.open .fdetail { grid-template-rows: 1fr; }
+.fdetail > div { overflow: hidden; }
+.fdetail p { font-size: .74rem; color: var(--secondary-foreground); line-height: 1.5; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border); }
+.farrow { flex: 0 0 auto; align-self: center; width: 40px; display: grid; place-items: center; color: var(--primary); }
+.farrow svg { width: 26px; height: 26px; }
+.gate { border-top-color: var(--chart-4); background: linear-gradient(180deg,#fff, #f2f7ff); }
+.gate .ph { color: var(--chart-4); }
+.gate .g-ico { display:inline-flex; width: 26px; height: 26px; border-radius: 7px; background: var(--accent); color: var(--chart-4); align-items:center; justify-content:center; margin-bottom: 6px; }
+
+/* legend + pay track */
+.flow-legend { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 6px; font-size: .78rem; color: var(--muted-foreground); }
+.flow-legend .lg { display: inline-flex; align-items: center; gap: 7px; }
+.sw { width: 14px; height: 14px; border-radius: 4px; border: 1px solid var(--border); }
+.sw.p { background: #fff; border-top: 3px solid var(--primary); }
+.sw.g { background: #f2f7ff; border-top: 3px solid var(--chart-4); }
+
+.paytrack { margin-top: 20px; background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; }
+.paytrack h4 { font-size: .92rem; margin-bottom: 12px; display:flex; align-items:center; gap:8px; }
+.pmiles { display: flex; gap: 0; overflow-x: auto; }
+.pm { flex: 0 0 auto; width: 120px; text-align: center; position: relative; padding-top: 22px; }
+.pm::before { content:""; position: absolute; top: 8px; left: 0; right: 0; height: 2px; background: var(--border); }
+.pm .pdot { position: absolute; top: 2px; left: 50%; transform: translateX(-50%); width: 14px; height: 14px; border-radius: 50%; background: var(--primary); border: 3px solid #fff; box-shadow: 0 0 0 2px var(--accent); }
+.pm .pv { font-size: .95rem; font-weight: 800; color: var(--chart-5); }
+.pm .pk { font-size: .68rem; color: var(--muted-foreground); }
+
+/* ---------- TOGGLES (accordion) ---------- */
+.toggles { margin-top: 20px; display: grid; gap: 10px; }
+.tg { background: #fff; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: border-color .2s, box-shadow .2s; }
+.tg[open] { border-color: #bcd3f7; box-shadow: 0 10px 26px rgba(30,58,138,.07); }
+.tg summary {
+  list-style: none; cursor: pointer; padding: 15px 18px; display: flex; align-items: center; gap: 12px;
+  font-weight: 600; color: var(--chart-5); font-size: .98rem;
+}
+.tg summary::-webkit-details-marker { display: none; }
+.tg summary .tnum { flex: 0 0 auto; width: 26px; height: 26px; border-radius: 7px; background: var(--accent); color: var(--chart-4); display: grid; place-items: center; font-size: .8rem; font-weight: 800; }
+.tg summary .plus { margin-left: auto; flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%; background: var(--secondary); display: grid; place-items: center; color: var(--secondary-foreground); transition: transform .25s, background .2s, color .2s; }
+.tg[open] summary .plus { transform: rotate(45deg); background: var(--primary); color: #fff; }
+.tg .body { padding: 0 18px 16px 56px; }
+.tg .body p { font-size: .9rem; color: var(--muted-foreground); }
+.tg .body ul { margin: 8px 0 0; padding-left: 18px; }
+.tg .body li { font-size: .88rem; color: var(--muted-foreground); margin-bottom: 5px; }
+.tagset { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.tag { font-size: .76rem; font-weight: 500; background: var(--muted); border: 1px solid var(--border); color: var(--secondary-foreground); padding: 5px 11px; border-radius: 999px; }
+
+/* price band */
+.price-band { background: linear-gradient(135deg,var(--chart-5),var(--chart-3)); color: #fff; border-radius: 18px; padding: 30px; position: relative; overflow: hidden; }
+.price-band::after { content:""; position: absolute; right:-50px; top:-50px; width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,.08); }
+.price-band .big { font-size: clamp(2.2rem,5vw,3.4rem); font-weight: 900; letter-spacing: -.03em; line-height: 1; }
+.price-band .big .cur { font-size: 1.3rem; vertical-align: super; opacity: .85; }
+.price-band .sub2 { opacity: .9; margin-top: 8px; max-width: 420px; font-size: .92rem; }
+
+.bd { display: grid; gap: 8px; }
+.bd .row { display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: center; background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+.bd .row h4 { font-size: .9rem; }
+.bd .row .amt { font-weight: 800; color: var(--chart-5); font-size: .95rem; }
+.bd .row .pct { font-size: .76rem; color: var(--primary); font-weight: 700; min-width: 44px; text-align: right; }
+
+/* sla */
+.sla4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+@media (max-width:820px){ .sla4 { grid-template-columns: repeat(2,1fr); } }
+.slac { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 16px; border-top: 3px solid var(--primary); }
+.slac .lvl { font-weight: 800; color: var(--chart-5); }
+.slac .t { font-family: var(--font-mono); font-size: 1.15rem; font-weight: 700; color: var(--primary); }
+.slac .l { font-size: .72rem; color: var(--muted-foreground); }
+
+/* team av */
+.tav { width: 46px; height: 46px; border-radius: 12px; background: linear-gradient(135deg,var(--chart-1),var(--chart-5)); color: #fff; display: grid; place-items: center; font-weight: 800; margin-bottom: 12px; }
+.role { font-size: .72rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: .04em; }
+
+/* callout + strengths/opportunities + security */
+.callout { background: linear-gradient(135deg, var(--accent), #eef6ff); border: 1px solid #bcd3f7; border-radius: 16px; padding: 20px 22px; display: flex; gap: 16px; align-items: flex-start; }
+.callout .cico { flex: 0 0 auto; width: 46px; height: 46px; border-radius: 12px; background: linear-gradient(135deg,var(--chart-4),var(--chart-5)); color: #fff; display: grid; place-items: center; }
+.callout h4 { font-size: 1.06rem; margin-bottom: 4px; }
+.callout p { font-size: .92rem; color: var(--secondary-foreground); }
+.soc { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+.soc .hd { display: flex; align-items: center; gap: 11px; margin-bottom: 14px; }
+.soc .hd .ic { flex: 0 0 auto; width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; }
+.soc .hd .ic-str { background: var(--accent); color: var(--chart-4); }
+.soc .hd .ic-opp { background: #e9f1ff; color: var(--chart-2); }
+.soc .hd h3 { font-size: 1.1rem; }
+.soc ul { list-style: none; display: grid; gap: 10px; }
+.soc li { display: flex; gap: 10px; font-size: .9rem; color: var(--secondary-foreground); align-items: flex-start; line-height: 1.45; }
+.soc li .tick { flex: 0 0 auto; margin-top: 2px; color: var(--primary); }
+
+/* closing */
+.close-slide { text-align: center; }
+.close-slide h2 { font-size: clamp(1.9rem,4vw,2.8rem); margin-bottom: 14px; }
+.close-slide p { color: var(--muted-foreground); max-width: 520px; margin: 0 auto 24px; font-size: 1.05rem; }
+.btn { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; padding: 12px 24px; border-radius: var(--radius); background: var(--primary); color: #fff; text-decoration: none; }
+.btn:hover { background: var(--chart-3); }
+
+.note { font-size: .78rem; color: var(--muted-foreground); font-style: italic; margin-top: 12px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span class="logo">S</span> Sidere AI</div>
+  <a class="demo-link" href="demo.html" target="_blank"><svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> Ver Demo interactivo</a>
+</div>
+<div class="pbar" id="pbar"></div>
+
+<div class="deck" id="deck">
+
+  <!-- 1 · TITLE -->
+  <section class="slide title-slide active">
+    <div class="slide-inner">
+      <span class="badge fx"><span class="dot2"></span> Propuesta Técnica y Económica</span>
+      <h1 class="fx d1">LAMARR <span class="grad">App</span></h1>
+      <p class="sub fx d2">La plataforma que hace trazable de extremo a extremo el Proyecto LAMARR: competencias digitales y empleabilidad para jóvenes en El Salvador.</p>
+      <div class="meta-row fx d3">
+        <div><span class="k">Oferente</span><span class="v">Sidere AI, S.A.S de C.V</span></div>
+        <div><span class="k">Presentado a</span><span class="v">Expertise France (Groupe AFD)</span></div>
+        <div><span class="k">Valor</span><span class="v">USD 39.200</span></div>
+        <div><span class="k">Plazo</span><span class="v">10 meses</span></div>
+      </div>
+    </div>
+    <div class="hint fx d4">Navega con <span class="kbd">←</span> <span class="kbd">→</span> o los botones de abajo</div>
+  </section>
+
+  <!-- 2 · POR QUÉ / VALOR -->
+  <section class="slide">
+    <div class="slide-inner">
+      <span class="eyebrow fx">La oferta de un vistazo</span>
+      <h2 class="s-title fx d1">Precio cerrado, entregas certificadas por QA</h2>
+      <p class="s-lead fx d2">Diseñamos la plataforma para absorber como parámetros las reglas de un programa social vivo. Así ofrecemos un precio firme sin adendas ni re-trabajo.</p>
+      <div class="grid g4 fx d3" style="margin-top:26px">
+        <div class="card"><div class="kbig">USD 39.2K</div><div class="klbl">Valor total, dentro del techo de USD 42K</div></div>
+        <div class="card"><div class="kbig">99.5%</div><div class="klbl">Disponibilidad SLA en horario operativo</div></div>
+        <div class="card"><div class="kbig">4 meses</div><div class="klbl">Garantía técnica (1 sobre el mínimo)</div></div>
+        <div class="card"><div class="kbig">3–5</div><div class="klbl">Devs junior con mentoría formal</div></div>
+      </div>
+      <div class="grid g2 fx d4" style="margin-top:16px">
+        <div class="card"><h3>PATH · Seguimiento específico</h3><p>El flujo del participante: preselección, perfilamiento, activación, mentoreo, alineación, transformación, expansión e inserción laboral.</p></div>
+        <div class="card"><h3>SERA EF · Seguimiento transversal</h3><p>La capa de monitoreo y evaluación: calidad, control de deserciones e indicadores del Marco Lógico para el donante.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · FLUJOGRAMA DEL PROCESO -->
+  <section class="slide">
+    <div class="slide-inner">
+      <span class="eyebrow fx">El proceso de la oferta</span>
+      <h2 class="s-title fx d1">Flujograma: de la movilización al traspaso</h2>
+      <p class="s-lead fx d2">Cada fase pasa por un gate de certificación de QA de EF antes de avanzar y desembolsar. El cronograma se gestiona por hitos, no por actividades.</p>
+
+      <div class="flow-wrap fx d3">
+        <div class="flow">
+          <div class="fnode has-detail"><div class="ph">Inicio</div><h4>Anticipo 35%</h4><p>Firma del contrato y movilización del equipo.</p><div class="when">USD 13.720</div><div class="fdetail"><div><p>Facturado a la firma del contrato y pagadero dentro de los 10 días calendario. El plazo contractual y el cómputo de plazos inician con la acreditación efectiva del anticipo.</p></div></div><span class="expand"><svg fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg><span class="lbl-more">Ampliar</span><span class="lbl-less">Cerrar</span></span></div>
+          <div class="farrow"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+
+          <div class="fnode has-detail"><div class="ph">Sprint 0</div><h4>Descubrimiento</h4><p>Talleres, arquitectura, ambientes AWS, backlog.</p><div class="when">Sem. 1–2</div><div class="fdetail"><div><p>Reunión de arranque y talleres de configuración: reglas de viáticos, deserción, plantillas documentales, fichas de indicadores y niveles de gobernanza. Definición de GitFlow, wireframes de flujos críticos y plan de releases.</p></div></div><span class="expand"><svg fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg><span class="lbl-more">Ampliar</span><span class="lbl-less">Cerrar</span></span></div>
+          <div class="farrow"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+
+          <div class="fnode gate has-detail"><div class="g-ico"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg></div><div class="ph">Gate QA</div><h4>Certifica</h4><p>Aceptación de EF habilita el desembolso.</p><div class="fdetail"><div><p>La aceptación de cada sprint y la liberación de su desembolso están condicionadas a la certificación —por el especialista de QA que EF designe— de que la entrega está libre de errores críticos y cumple los requerimientos (numeral XI.VI).</p></div></div><span class="expand"><svg fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg><span class="lbl-more">Ampliar</span><span class="lbl-less">Cerrar</span></span></div>
+          <div class="farrow"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+
+          <div class="fnode has-detail"><div class="ph">Sprints 1–4</div><h4>MVP</h4><p>Enrolamiento, selección, viáticos, RBAC, auditoría.</p><div class="when">Sem. 3–10</div><div class="fdetail"><div><p>Enrolamiento con prueba de vida y consentimiento, selección multietapa, motor de viáticos con cálculo semanal, anti-duplicidad y conciliación, RBAC y auditoría base. Demos bisemanales en testing y MVP certificado por QA.</p></div></div><span class="expand"><svg fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg><span class="lbl-more">Ampliar</span><span class="lbl-less">Cerrar</span></span></div>
+          <div class="farrow"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+
+          <div class="fnode has-detail"><div class="ph">Sprints 5–6</div><h4>Incremento 1</h4><p>Servicios, académico, deserción, liquidaciones.</p><div class="when">Sem. 11–14</div><div class="fdetail"><div><p>Servicios y mentorías, gestión académica y expediente único, deserción e IP-17, gestión documental con plantillas y liquidaciones CFP–Operador–EF. Incremento 1 certificado por QA.</p></div></div><span class="expand"><svg fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg><span class="lbl-more">Ampliar</span><span class="lbl-less">Cerrar</span></span></div>
+          <div class="farrow"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+
+          <div class="fnode has-detail"><div class="ph">Sprint 7</div><h4>Incremento 2</h4><p>Empleabilidad, dashboards SERA EF, integraciones.</p><div class="when">Sem. 15–16</div><div class="fdetail"><div><p>Empleabilidad y seguimiento laboral, dashboards e indicadores SERA EF, reportes exportables, integraciones MS365/SharePoint y pruebas de carga con 200 usuarios concurrentes. Release candidate.</p></div></div><span class="expand"><svg fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg><span class="lbl-more">Ampliar</span><span class="lbl-less">Cerrar</span></span></div>
+          <div class="farrow"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+
+          <div class="fnode gate has-detail"><div class="g-ico"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 21l-4.9 2.6.9-5.5-4-3.9 5.5-.8z"/></svg></div><div class="ph">Liberación</div><h4>Producción</h4><p>Certificación final, catálogos, capacitación.</p><div class="fdetail"><div><p>Certificación final, despliegue en producción, carga inicial de catálogos maestros, capacitación a usuarios por rol y al equipo técnico de EF, y acta de recepción. Semanas 17–18.</p></div></div><span class="expand"><svg fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg><span class="lbl-more">Ampliar</span><span class="lbl-less">Cerrar</span></span></div>
+          <div class="farrow"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+
+          <div class="fnode has-detail"><div class="ph">Meses 5–10</div><h4>Acompañamiento</h4><p>Soporte SLA, estabilización, traspaso final.</p><div class="when">6 meses</div><div class="fdetail"><div><p>Soporte conforme a SLA, mantenimiento correctivo/adaptativo/preventivo, ajustes de parametrización, monitoreo de desempeño, informes mensuales de servicio y traspaso final de conocimiento, credenciales y documentación.</p></div></div><span class="expand"><svg fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg><span class="lbl-more">Ampliar</span><span class="lbl-less">Cerrar</span></span></div>
+        </div>
+        <div class="flow-legend">
+          <span class="lg"><span class="sw p"></span> Fase de trabajo</span>
+          <span class="lg"><span class="sw g"></span> Gate / hito de certificación QA</span>
+          <span class="lg">← desliza · toca una tarjeta para ampliar →</span>
+        </div>
+      </div>
+
+      <div class="paytrack fx d4">
+        <h4><svg width="16" height="16" fill="none" stroke="var(--primary)" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg> Perfil de desembolso acumulado</h4>
+        <div class="pmiles">
+          <div class="pm"><span class="pdot"></span><div class="pv">35%</div><div class="pk">Anticipo</div></div>
+          <div class="pm"><span class="pdot"></span><div class="pv">60.1%</div><div class="pk">MVP · sem. 10</div></div>
+          <div class="pm"><span class="pdot"></span><div class="pv">81.6%</div><div class="pk">Liberación · sem. 18</div></div>
+          <div class="pm"><span class="pdot"></span><div class="pv">100%</div><div class="pk">Cierre · mes 10</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · SOLUCIÓN CON TOGGLES -->
+  <section class="slide">
+    <div class="slide-inner">
+      <span class="eyebrow fx">Solución funcional · toca para ampliar</span>
+      <h2 class="s-title fx d1">MVP primero, incrementos priorizados con EF</h2>
+      <div class="toggles fx d2">
+        <details class="tg" open>
+          <summary><span class="tnum">1</span> MVP — Sprints 1–4 <span class="plus">+</span></summary>
+          <div class="body">
+            <p>Habilita la operación crítica del programa desde la primera fase.</p>
+            <ul>
+              <li>Enrolamiento con prueba de vida y consentimiento</li>
+              <li>Proceso de selección multietapa y gestión de estados</li>
+              <li>Motor de viáticos: cálculo semanal, anti-duplicidad y conciliación</li>
+              <li>Administración de catálogos, roles, parámetros y auditoría base</li>
+            </ul>
+            <div class="tagset"><span class="tag">Épicas 1, 2, 5, 10, 12</span></div>
+          </div>
+        </details>
+        <details class="tg">
+          <summary><span class="tnum">2</span> Incremento 1 — Sprints 5–6 <span class="plus">+</span></summary>
+          <div class="body">
+            <p>Servicios al participante y capa administrativo-financiera completa.</p>
+            <ul>
+              <li>Mentorías, simulador, potenciadores y actividades complementarias</li>
+              <li>Gestión académica y expediente único del participante</li>
+              <li>Deserción e IP-17; gestión documental con plantillas</li>
+              <li>Liquidaciones CFP–Operador–EF</li>
+            </ul>
+            <div class="tagset"><span class="tag">Épicas 3, 4, 6, 7</span><span class="tag">Módulo E</span></div>
+          </div>
+        </details>
+        <details class="tg">
+          <summary><span class="tnum">3</span> Incremento 2 — Sprint 7 <span class="plus">+</span></summary>
+          <div class="body">
+            <p>Empleabilidad y la capa analítica para el donante.</p>
+            <ul>
+              <li>Seguimiento laboral e inserción con evidencia configurable</li>
+              <li>Dashboards e indicadores del Marco Lógico (SERA EF)</li>
+              <li>Reportes exportables e integraciones MS365 / SharePoint</li>
+              <li>Endurecimiento de auditoría y exportación de logs</li>
+            </ul>
+            <div class="tagset"><span class="tag">Épicas 8, 9, 11, 12</span></div>
+          </div>
+        </details>
+        <details class="tg">
+          <summary><span class="tnum">4</span> Experiencia por rol <span class="plus">+</span></summary>
+          <div class="body">
+            <ul>
+              <li><strong>EF:</strong> portal administrativo con dashboards estratégicos y auditoría.</li>
+              <li><strong>Operador:</strong> portal territorial, aprobación de viáticos y deserciones.</li>
+              <li><strong>CFPs:</strong> app mobile-first, asistencia en campo tolerante a conectividad.</li>
+              <li><strong>Participantes:</strong> app mobile-first, avance en el PATH y estado de viáticos.</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · ARQUITECTURA -->
+  <section class="slide">
+    <div class="slide-inner">
+      <span class="eyebrow fx">Arquitectura técnica</span>
+      <h2 class="s-title fx d1">Cloud-native en la cuenta AWS de EF</h2>
+      <p class="s-lead fx d2">Monolito modular en contenedores Docker, dimensionado para 2.000 participantes, 200 usuarios concurrentes y 150–200 mil transacciones/mes.</p>
+      <div class="flow-wrap fx d3">
+        <div class="flow">
+          <div class="fnode"><h4>Usuarios</h4><p>Web y móvil</p></div>
+          <div class="farrow"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+          <div class="fnode"><div class="ph">CloudFront</div><h4>CDN + WAF</h4><p>Entrada pública segura</p></div>
+          <div class="farrow"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+          <div class="fnode"><div class="ph">Load Balancer</div><h4>ALB</h4><p>Distribuye tráfico</p></div>
+          <div class="farrow"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+          <div class="fnode gate"><div class="ph">ECS Fargate</div><h4>App</h4><p>Contenedores auto-escalables</p></div>
+          <div class="farrow"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+          <div class="fnode"><div class="ph">RDS Multi-AZ</div><h4>PostgreSQL</h4><p>Fuente de verdad + S3</p></div>
+        </div>
+      </div>
+      <div class="toggles fx d4">
+        <details class="tg">
+          <summary><span class="tnum">i</span> Resiliencia y seguridad por diseño <span class="plus">+</span></summary>
+          <div class="body">
+            <ul>
+              <li>Disponibilidad 99.5% · RPO ≤ 24h · RTO ≤ 4h con Multi-AZ y respaldos</li>
+              <li>OAuth 2.0, RBAC aplicado en la API, cifrado TLS 1.2+</li>
+              <li>Auditoría inmutable append-only con hash encadenado (Épica 12)</li>
+              <li>Secrets Manager: ninguna credencial en el repositorio</li>
+              <li>Accesibilidad WCAG 2.1 AA en los flujos principales</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEGURIDAD Y PRIVACIDAD -->
+  <section class="slide">
+    <div class="slide-inner">
+      <span class="eyebrow fx">Seguridad y privacidad</span>
+      <h2 class="s-title fx d1">Protección reforzada de la identidad de los menores</h2>
+      <p class="s-lead fx d2">Usamos herramientas desarrolladas por nosotros mismos para la prueba de vida, con procesamiento local: no enviamos el rostro de los participantes a servidores ajenos.</p>
+
+      <div class="callout fx d3" style="margin-top:20px">
+        <div class="cico"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.4-3 7.4-7 9-4-1.6-7-4.6-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <div>
+          <h4>Prueba de vida sin servidores de terceros</h4>
+          <p>Nuestra herramienta <strong>Open Liveness</strong> realiza la verificación biométrica y la prueba de vida con procesamiento local en el dispositivo. Al no depender de un servicio externo para procesar la imagen, protegemos la identidad y la imagen de los menores de edad y reducimos al mínimo la exposición de datos sensibles.</p>
+        </div>
+      </div>
+
+      <div class="grid g2 fx d4" style="margin-top:16px">
+        <div class="soc">
+          <div class="hd"><span class="ic ic-str"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 7l3 3M5 19l1-4 9-9 3 3-9 9-4 1z"/></svg></span><h3>Herramientas propias</h3></div>
+          <ul>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span><strong>Open Liveness</strong> — prueba de vida y verificación biométrica con procesamiento local, sin costos de licencia externos.</span></li>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span><strong>OpenOCR</strong> — lectura de documentos de identidad.</span></li>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span><strong>OpenSignature</strong> — firma electrónica trazable.</span></li>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span><strong>Attendly</strong> — control de asistencia por profesor o auto-asistencia.</span></li>
+          </ul>
+        </div>
+        <div class="soc">
+          <div class="hd"><span class="ic ic-opp"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3v18M5 7h14M7 7l-3 7h6zM17 7l-3 7h6z"/></svg></span><h3>Cumplimiento y protección de datos</h3></div>
+          <ul>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span>Cumplimiento de la <strong>Ley de Protección de Datos Personales de El Salvador</strong>.</span></li>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span>Consentimiento trazable antes de capturar datos; minimización y finalidad.</span></li>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span>Ruta especial para menores (16–17): documento alternativo y consentimiento del representante legal.</span></li>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span>Derechos ARCO operativizados dentro de la plataforma.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="toggles fx d5">
+        <details class="tg">
+          <summary><span class="tnum">🔒</span> Controles técnicos de seguridad <span class="plus">+</span></summary>
+          <div class="body"><ul>
+            <li>Cifrado TLS 1.2+ en tránsito y cifrado a nivel de aplicación para documento de identidad y datos biométricos de referencia.</li>
+            <li>RBAC aplicado en la API (no solo en interfaz), con segregación de datos por CFP.</li>
+            <li>Auditoría inmutable append-only con hash encadenado (Épica 12), exportable para auditoría externa.</li>
+            <li>Retención y purga configurables conforme a la normativa nacional y las reglas del donante.</li>
+          </ul></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · METODOLOGÍA -->
+  <section class="slide">
+    <div class="slide-inner">
+      <span class="eyebrow fx">Metodología y visibilidad</span>
+      <h2 class="s-title fx d1">Scrum con trazabilidad total</h2>
+      <p class="s-lead fx d2">Sprints bisemanales, demos en la nube y aceptación condicionada a QA. Toca cada punto para ver el detalle.</p>
+      <div class="toggles fx d3">
+        <details class="tg" open>
+          <summary><span class="tnum">A</span> Cadencia y entregas <span class="plus">+</span></summary>
+          <div class="body"><ul>
+            <li>Sprints bisemanales con todas las ceremonias y el PO de EF</li>
+            <li>Demos desplegadas en testing, nunca desde local (numeral XI.VI)</li>
+            <li>Bugs del sprint N se atienden en el N+1 con 15% de capacidad reservada</li>
+          </ul></div>
+        </details>
+        <details class="tg">
+          <summary><span class="tnum">B</span> GitHub de EF y CI/CD <span class="plus">+</span></summary>
+          <div class="body"><ul>
+            <li>Permisos «Developer», GitFlow y PRs pequeños (≤ 400 líneas)</li>
+            <li>Revisión cruzada senior obligatoria; prohibición de mega-commits</li>
+            <li>Pipeline con linters, pruebas, análisis estático y escaneo de secretos</li>
+          </ul></div>
+        </details>
+        <details class="tg">
+          <summary><span class="tnum">C</span> Aceptación, QA y traspaso <span class="plus">+</span></summary>
+          <div class="body"><ul>
+            <li>Colección Postman viva como entregable de cada sprint</li>
+            <li>Datos semilla, usuarios de prueba y release notes por entrega</li>
+            <li>Documentación viva, capacitación y entrega formal de código e IaC al cierre</li>
+          </ul></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 · EQUIPO -->
+  <section class="slide">
+    <div class="slide-inner">
+      <span class="eyebrow fx">Equipo de trabajo</span>
+      <h2 class="s-title fx d1">Quienes ejecutan el trabajo</h2>
+      <p class="s-lead fx d2">Equipo certificado con dedicación garantizada en horario salvadoreño (UTC-6).</p>
+      <div class="grid g4 fx d3" style="margin-top:22px">
+        <div class="card"><div class="tav">ML</div><div class="role">Product Owner</div><h3 style="margin:4px 0 6px">Marixa Landaverde</h3><p>Ciencias de la Computación; especialista en área educativa y normativas.</p></div>
+        <div class="card"><div class="tav">HO</div><div class="role">Scrum Master / Arquitecto</div><h3 style="margin:4px 0 6px">Héctor Oscátegui</h3><p>+20 años; AWS Solutions Architect y Certified Scrum Master.</p></div>
+        <div class="card"><div class="tav">JG</div><div class="role">Dev Senior Full-Stack</div><h3 style="margin:4px 0 6px">Josué Guardado</h3><p>Java, Spring Boot, React, PostgreSQL, AWS. +5 años.</p></div>
+        <div class="card"><div class="tav">CC</div><div class="role">UX/UI y QA interno</div><h3 style="margin:4px 0 6px">Carlos C.</h3><p>+10 años en apps empresariales, Spring y ML.</p></div>
+      </div>
+      <div class="toggles fx d4">
+        <details class="tg">
+          <summary><span class="tnum">+</span> Programa de mentoría a juniors <span class="plus">+</span></summary>
+          <div class="body"><p>Asumimos la mentoría de los 3–5 desarrolladores junior que EF incorpora: onboarding de 2 semanas, asignación graduada de tareas, un mentor por junior y el mismo pipeline de CI, revisión senior y QA que el resto del código.</p></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORTALEZAS Y OPORTUNIDADES -->
+  <section class="slide">
+    <div class="slide-inner">
+      <span class="eyebrow fx">Fortalezas y oportunidades</span>
+      <h2 class="s-title fx d1">Por qué somos el socio indicado</h2>
+      <p class="s-lead fx d2">Capacidades ya probadas que aceleran el proyecto, y el valor que dejamos instalado en Expertise France.</p>
+      <div class="grid g2 fx d3" style="margin-top:20px">
+        <div class="soc">
+          <div class="hd"><span class="ic ic-str"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></span><h3>Fortalezas</h3></div>
+          <ul>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span>Herramientas propietarias listas (prueba de vida, OCR, firma, asistencia) que ahorran tiempo y costo.</span></li>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span>Arquitecto con +20 años y certificaciones AWS y Scrum; PO especializada en el sector educativo.</span></li>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span>Comprensión profunda de PATH y SERA EF y de las épicas del TDR.</span></li>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span>Precio cerrado con supuestos explícitos y garantía superior al mínimo (4 meses).</span></li>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span>Experiencia comprobable: PulsoSV, Codito y PortalGuanaco (trazabilidad, dashboards, APIs, cloud).</span></li>
+          </ul>
+        </div>
+        <div class="soc">
+          <div class="hd"><span class="ic ic-opp"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-4 12.7V17h8v-2.3A7 7 0 0012 2zM9 21h6M10 17v4M14 17v4"/></svg></span><h3>Oportunidades</h3></div>
+          <ul>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span>Reutilizar nuestras herramientas propias = ahorro sostenido de costos AWS y de licencias para EF.</span></li>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span>Motor de reglas configurable que acompaña la evolución del programa sin re-trabajo ni adendas.</span></li>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span>Capacidad instalada: mentoría a 3–5 desarrolladores junior que quedan formados en EF.</span></li>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span>Escalable a más CFPs, cohortes e indicadores del Marco Lógico.</span></li>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span>Base tecnológica para nuevos módulos y futuras fases del proyecto.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 · ECONÓMICA -->
+  <section class="slide">
+    <div class="slide-inner">
+      <span class="eyebrow fx">Propuesta económica</span>
+      <h2 class="s-title fx d1">Precio fijo, pagos por hito</h2>
+      <div class="grid g2 fx d2" style="margin-top:20px;align-items:start">
+        <div class="price-band">
+          <div style="font-size:.82rem;opacity:.85;font-weight:600;letter-spacing:.02em">VALOR TOTAL</div>
+          <div class="big"><span class="cur">USD </span>39.200</div>
+          <p class="sub2">Exento de IVA cuando aplique, dentro del techo de USD 42.000. Anticipo de movilización del 35% y 65% sujeto a la aceptación de cada entrega.</p>
+        </div>
+        <div class="bd">
+          <div class="row"><h4>Fase 1 · Descubrimiento (Sprint 0)</h4><span class="amt">USD 3.000</span><span class="pct">7.7%</span></div>
+          <div class="row"><h4>Fase 2 · Desarrollo (Sprints 1–7)</h4><span class="amt">USD 26.600</span><span class="pct">67.9%</span></div>
+          <div class="row"><h4>Fase 3 · Implementación y traspaso</h4><span class="amt">USD 2.400</span><span class="pct">6.1%</span></div>
+          <div class="row"><h4>Fase 4 · Acompañamiento (6 meses)</h4><span class="amt">USD 7.200</span><span class="pct">18.4%</span></div>
+        </div>
+      </div>
+      <div class="toggles fx d3">
+        <details class="tg">
+          <summary><span class="tnum">$</span> Qué está incluido y qué corre por cuenta de EF <span class="plus">+</span></summary>
+          <div class="body"><ul>
+            <li><strong>Incluido:</strong> desarrollo, QA interno, documentación viva, garantía de 4 meses y 6 meses de soporte.</li>
+            <li><strong>Por cuenta de EF:</strong> infraestructura y servicios AWS, licencias de biometría, plataforma psicométrica y Microsoft 365.</li>
+            <li><strong>Cotizable:</strong> migración de expedientes históricos y firma digital certificada, si EF las requiere.</li>
+          </ul></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 · SLA / GARANTÍAS -->
+  <section class="slide">
+    <div class="slide-inner">
+      <span class="eyebrow fx">Niveles de servicio y garantías</span>
+      <h2 class="s-title fx d1">Respuesta comprometida por criticidad</h2>
+      <div class="sla4 fx d2" style="margin-top:20px">
+        <div class="slac"><div class="lvl">Crítica</div><div class="t">≤ 2h</div><div class="l">resolución ≤ 8h hábiles</div></div>
+        <div class="slac"><div class="lvl">Alta</div><div class="t">≤ 4h</div><div class="l">resolución ≤ 24h hábiles</div></div>
+        <div class="slac"><div class="lvl">Media</div><div class="t">≤ 8h</div><div class="l">resolución ≤ 72h hábiles</div></div>
+        <div class="slac"><div class="lvl">Baja</div><div class="t">≤ 24h</div><div class="l">resolución ≤ 5 días</div></div>
+      </div>
+      <div class="toggles fx d3">
+        <details class="tg" open>
+          <summary><span class="tnum">✓</span> Garantía y mantenimiento <span class="plus">+</span></summary>
+          <div class="body"><ul>
+            <li>Garantía técnica de 4 meses: bugs, seguridad e inconsistencias PATH/SERA, sin costo</li>
+            <li>Mantenimiento correctivo, adaptativo y preventivo durante el acompañamiento</li>
+            <li>Aceptamos penalizaciones por retraso o una bolsa de horas como compensación</li>
+          </ul></div>
+        </details>
+        <details class="tg">
+          <summary><span class="tnum">✓</span> Cumplimiento del checklist del TDR <span class="plus">+</span></summary>
+          <div class="body"><ul>
+            <li>Arquitectura, despliegue en AWS de EF y uso de su GitHub con PRs</li>
+            <li>Enfoque Scrum, entregas y QA externo; comprensión de PATH y SERA EF</li>
+            <li>Desglose de costos, cronograma de pagos y garantía ≥ 3 meses (ofrecemos 4)</li>
+          </ul></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 · CIERRE -->
+  <section class="slide close-slide">
+    <div class="slide-inner">
+      <span class="eyebrow fx">Sidere AI, S.A.S de C.V</span>
+      <h2 class="fx d1">Listos para movilizar desde el día uno</h2>
+      <p class="fx d2">Oferta válida por 90 días calendario. Conversemos sobre cómo la LAMARR App sostiene la trazabilidad y la rendición de cuentas del programa.</p>
+      <div class="fx d3">
+        <a class="btn" href="mailto:marixa.landaverde@sidereai.com">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+          marixa.landaverde@sidereai.com
+        </a>
+      </div>
+      <p class="note fx d4">www.sidereai.com · Presentado a Expertise France (Groupe AFD) · Financiador: Unión Europea</p>
+    </div>
+  </section>
+
+</div>
+
+<div class="controls">
+  <button class="navbtn" id="prev"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg> Anterior</button>
+  <div class="dots" id="dots"></div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span class="counter-badge" id="count">1 / 10</span>
+    <button class="navbtn primary" id="next">Siguiente <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+  </div>
+</div>
+
+<script>
+const slides = Array.from(document.querySelectorAll('.slide'));
+const total = slides.length;
+let cur = 0;
+
+const dotsWrap = document.getElementById('dots');
+slides.forEach((_, i) => {
+  const b = document.createElement('button');
+  b.className = 'dot' + (i === 0 ? ' on' : '');
+  b.setAttribute('aria-label', 'Ir a slide ' + (i + 1));
+  b.addEventListener('click', () => go(i));
+  dotsWrap.appendChild(b);
+});
+const dots = Array.from(dotsWrap.children);
+const prevBtn = document.getElementById('prev');
+const nextBtn = document.getElementById('next');
+const count = document.getElementById('count');
+const pbar = document.getElementById('pbar');
+
+function go(i){
+  cur = Math.max(0, Math.min(total - 1, i));
+  slides.forEach((s, idx) => s.classList.toggle('active', idx === cur));
+  dots.forEach((d, idx) => d.classList.toggle('on', idx === cur));
+  count.textContent = (cur + 1) + ' / ' + total;
+  pbar.style.width = ((cur) / (total - 1)) * 100 + '%';
+  prevBtn.disabled = cur === 0;
+  nextBtn.disabled = cur === total - 1;
+  // reset scroll of the newly shown slide
+  slides[cur].scrollTop = 0;
+}
+prevBtn.addEventListener('click', () => go(cur - 1));
+nextBtn.addEventListener('click', () => go(cur + 1));
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); go(cur + 1); }
+  else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(cur - 1); }
+  else if (e.key === 'Home') go(0);
+  else if (e.key === 'End') go(total - 1);
+});
+
+// touch swipe
+let tx = 0, ty = 0;
+document.addEventListener('touchstart', (e) => { tx = e.changedTouches[0].clientX; ty = e.changedTouches[0].clientY; }, { passive: true });
+document.addEventListener('touchend', (e) => {
+  const dx = e.changedTouches[0].clientX - tx;
+  const dy = e.changedTouches[0].clientY - ty;
+  if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) { go(cur + (dx < 0 ? 1 : -1)); }
+}, { passive: true });
+
+// Expandable flowchart cards
+document.querySelectorAll('.fnode.has-detail').forEach(node => {
+  node.addEventListener('click', () => node.classList.toggle('open'));
+});
+
+go(0);
+</script>
+</body>
+</html>

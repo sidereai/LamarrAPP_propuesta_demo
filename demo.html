@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LAMARR App · Demo interactivo · République Expertise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --surface:#f9f9ff; --surface-dim:#cfdaf1; --surface-bright:#f9f9ff;
+  --scl:#ffffff; --scLow:#f0f3ff; --sc:#e7eeff; --scHigh:#dee8ff; --scHighest:#d8e3fa;
+  --on-surface:#111c2c; --on-surface-variant:#44474e; --inverse-surface:#263142; --inverse-on-surface:#ebf1ff;
+  --outline:#75777f; --outline-variant:#c5c6cf;
+  --primary:#031636; --on-primary:#ffffff; --primary-container:#1a2b4c; --on-primary-container:#8293ba;
+  --inverse-primary:#b6c6f0;
+  --secondary:#bc000a; --secondary-container:#e90d14; --on-secondary:#ffffff;
+  --error:#ba1a1a; --error-container:#ffdad6; --on-error-container:#93000a;
+  --primary-fixed:#d8e2ff; --on-primary-fixed:#071b3b;
+  --background:#f9f9ff;
+  --accent-red:#e1000f;
+  --success:#15803d; --success-bg:#e6f4ea;
+  --warn:#b45309; --warn-bg:#fbefd9;
+  --info-bg:#e7eeff; --info-fg:#1a2b4c;
+  --r-sm:.125rem; --r:.25rem; --r-md:.375rem; --r-lg:.5rem; --r-xl:.75rem; --r-full:9999px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:Inter,sans-serif;color:var(--on-surface);background:var(--background);-webkit-font-smoothing:antialiased;font-size:16px}
+h1,h2,h3,h4{font-weight:700;letter-spacing:-.01em;color:var(--on-surface)}
+button{font-family:inherit;cursor:pointer}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:var(--outline-variant);border-radius:99px}
+
+/* ---------- BUTTONS / CHIPS ---------- */
+.btn{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;padding:9px 16px;border-radius:var(--r);border:1px solid transparent;transition:.15s;white-space:nowrap}
+.btn-primary{background:var(--primary-container);color:#fff}
+.btn-primary:hover{background:var(--primary)}
+.btn-outline{background:#fff;color:var(--primary-container);border-color:var(--outline-variant)}
+.btn-outline:hover{border-color:var(--primary-container)}
+.btn-danger{background:var(--accent-red);color:#fff}
+.btn-danger:hover{background:var(--secondary)}
+.btn-sm{padding:6px 12px;font-size:13px}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:var(--r-full);white-space:nowrap}
+.c-ok{background:var(--success-bg);color:var(--success)}
+.c-warn{background:var(--warn-bg);color:var(--warn)}
+.c-err{background:var(--error-container);color:var(--on-error-container)}
+.c-info{background:var(--info-bg);color:var(--info-fg)}
+.c-mut{background:var(--scHigh);color:var(--on-surface-variant)}
+
+/* ---------- LOGIN ---------- */
+#login{position:fixed;inset:0;display:grid;place-items:center;padding:24px;
+  background:radial-gradient(900px 500px at 80% -10%,#dee8ff,transparent 60%),var(--background);overflow:auto}
+.login-card{width:100%;max-width:940px;background:#fff;border:1px solid var(--outline-variant);border-radius:var(--r-xl);overflow:hidden;display:grid;grid-template-columns:1fr 1.2fr}
+.login-brand{background:linear-gradient(150deg,var(--primary),var(--primary-container));color:#fff;padding:40px 34px;display:flex;flex-direction:column;justify-content:space-between}
+.login-brand .lg{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px}
+.login-brand .lg .sq{width:34px;height:34px;border-radius:8px;background:#fff;color:var(--primary);display:grid;place-items:center;font-weight:800}
+.login-brand h1{color:#fff;font-size:26px;margin:26px 0 10px;line-height:1.2}
+.login-brand p{color:var(--inverse-primary);font-size:14px;line-height:1.6}
+.login-brand .foot{font-size:12px;color:#9db0d6;margin-top:30px}
+.login-brand .bar{height:4px;width:52px;background:var(--accent-red);border-radius:9px;margin:18px 0}
+.login-body{padding:34px}
+.login-body h2{font-size:20px;margin-bottom:4px}
+.login-body .sub{color:var(--on-surface-variant);font-size:14px;margin-bottom:20px}
+.roles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.role-btn{text-align:left;background:#fff;border:1px solid var(--outline-variant);border-radius:var(--r-lg);padding:16px;transition:.15s;display:flex;gap:12px;align-items:flex-start}
+.role-btn:hover{border-color:var(--primary-container);background:var(--scLow);transform:translateY(-2px)}
+.role-btn .ri{width:38px;height:38px;flex:0 0 auto;border-radius:9px;background:var(--sc);color:var(--primary-container);display:grid;place-items:center}
+.role-btn h3{font-size:15px}
+.role-btn p{font-size:12px;color:var(--on-surface-variant);margin-top:2px;line-height:1.4}
+@media(max-width:760px){.login-card{grid-template-columns:1fr}.login-brand{display:none}.roles{grid-template-columns:1fr}}
+
+/* ---------- APP SHELL ---------- */
+#app{display:none;min-height:100vh}
+#app.on{display:grid;grid-template-columns:250px 1fr;grid-template-rows:60px 1fr;grid-template-areas:"side top" "side main"}
+.topbar{grid-area:top;background:#fff;border-bottom:1px solid var(--outline-variant);display:flex;align-items:center;gap:16px;padding:0 22px;position:sticky;top:0;z-index:20}
+.topbar .search{flex:1;max-width:420px;display:flex;align-items:center;gap:8px;background:var(--scLow);border:1px solid var(--outline-variant);border-radius:var(--r);padding:8px 12px;color:var(--on-surface-variant);font-size:14px}
+.topbar .search input{border:none;background:none;outline:none;font-family:inherit;font-size:14px;width:100%;color:var(--on-surface)}
+.topbar .tb-right{margin-left:auto;display:flex;align-items:center;gap:14px}
+.iconbtn{width:36px;height:36px;border-radius:var(--r);border:1px solid transparent;background:none;display:grid;place-items:center;color:var(--on-surface-variant);position:relative}
+.iconbtn:hover{background:var(--scLow)}
+.iconbtn .badge{position:absolute;top:5px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--accent-red)}
+.role-switch{display:flex;align-items:center;gap:8px;background:var(--scLow);border:1px solid var(--outline-variant);border-radius:var(--r-full);padding:4px 6px 4px 12px;font-size:13px;font-weight:600}
+.role-switch select{border:none;background:none;font-family:inherit;font-weight:600;font-size:13px;color:var(--primary-container);outline:none;cursor:pointer}
+.hamb{display:none}
+
+.sidebar{grid-area:side;background:var(--primary-container);color:#fff;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sidebar .brand{display:flex;align-items:center;gap:10px;padding:16px 18px;font-weight:800;font-size:16px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sidebar .brand .sq{width:30px;height:30px;border-radius:7px;background:#fff;color:var(--primary-container);display:grid;place-items:center;font-weight:800;font-size:13px}
+.sidebar .brand small{display:block;font-size:10px;font-weight:500;color:var(--on-primary-container);letter-spacing:.02em}
+.nav{padding:12px 10px;display:flex;flex-direction:column;gap:2px}
+.nav .sec{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--on-primary-container);padding:12px 12px 6px}
+.nav a{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:var(--r-md);color:#c7d2e6;font-size:14px;font-weight:500;text-decoration:none;transition:.12s;border-left:3px solid transparent;cursor:pointer}
+.nav a:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav a.active{background:rgba(255,255,255,.1);color:#fff;border-left-color:var(--accent-red);font-weight:600}
+.nav a svg{width:18px;height:18px;flex:0 0 auto}
+.sidebar .who{margin-top:auto;padding:14px 16px;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px}
+.sidebar .who .av{width:34px;height:34px;border-radius:9px;background:var(--inverse-primary);color:var(--primary);display:grid;place-items:center;font-weight:800;font-size:13px}
+.sidebar .who .nm{font-size:13px;font-weight:600}
+.sidebar .who .rl{font-size:11px;color:var(--on-primary-container)}
+
+.main{grid-area:main;overflow-y:auto;height:calc(100vh - 60px)}
+.view{padding:26px 30px;max-width:1280px;margin:0 auto}
+.page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.page-head h1{font-size:24px}
+.page-head .crumb{font-size:12px;color:var(--on-surface-variant);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.page-head p{font-size:14px;color:var(--on-surface-variant);margin-top:4px;max-width:640px}
+.head-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+@media(max-width:900px){
+  #app.on{grid-template-columns:1fr}
+  .sidebar{position:fixed;left:0;top:0;bottom:0;width:250px;z-index:60;transform:translateX(-100%);transition:transform .25s}
+  .sidebar.open{transform:none}
+  .topbar{grid-column:1/-1}
+  .hamb{display:grid}
+  .scrim{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:55;display:none}
+  .scrim.on{display:block}
+}
+
+/* ---------- CARDS / GRID ---------- */
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:1000px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:1fr}}
+@media(max-width:680px){.g2,.g4{grid-template-columns:1fr}}
+.card{background:var(--scl);border:1px solid var(--outline-variant);border-radius:var(--r-lg);padding:18px}
+.card.pad0{padding:0;overflow:hidden}
+.card h3{font-size:16px}
+.kpi .top{display:flex;align-items:center;justify-content:space-between}
+.kpi .ic{width:36px;height:36px;border-radius:9px;background:var(--sc);color:var(--primary-container);display:grid;place-items:center}
+.kpi .val{font-size:28px;font-weight:800;margin-top:12px;color:var(--on-surface);line-height:1}
+.kpi .lbl{font-size:13px;color:var(--on-surface-variant);margin-top:6px}
+.kpi .delta{font-size:12px;font-weight:600;margin-top:8px}
+.up{color:var(--success)}.down{color:var(--accent-red)}
+.card-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.card-title h3{font-size:15px}
+.muted{color:var(--on-surface-variant)}
+.small{font-size:13px}
+
+/* tables */
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl thead th{text-align:left;background:var(--scLow);color:var(--on-surface-variant);font-size:12px;text-transform:uppercase;letter-spacing:.04em;font-weight:600;padding:11px 14px;border-bottom:1px solid var(--outline-variant)}
+.tbl tbody td{padding:12px 14px;border-bottom:1px solid var(--outline-variant)}
+.tbl tbody tr:last-child td{border-bottom:none}
+.tbl tbody tr{transition:background .12s}
+.tbl tbody tr.clickable{cursor:pointer}
+.tbl tbody tr.clickable:hover{background:var(--scLow)}
+.uid{font-family:monospace;font-size:12px;color:var(--on-surface-variant)}
+.person{display:flex;align-items:center;gap:10px}
+.av{width:34px;height:34px;border-radius:9px;background:var(--primary-container);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;flex:0 0 auto}
+.person .nm{font-weight:600;font-size:14px}
+.person .rl{font-size:12px;color:var(--on-surface-variant)}
+
+/* progress bar */
+.pbar{height:8px;background:var(--scHigh);border-radius:99px;overflow:hidden}
+.pbar span{display:block;height:100%;background:var(--primary-container);border-radius:99px}
+.pbar.red span{background:var(--accent-red)}
+.pbar.grn span{background:var(--success)}
+
+/* donut */
+.donut{--p:70;--c:var(--primary-container);width:120px;height:120px;border-radius:50%;
+  background:conic-gradient(var(--c) calc(var(--p)*1%),var(--scHigh) 0);display:grid;place-items:center}
+.donut .hole{width:84px;height:84px;border-radius:50%;background:#fff;display:grid;place-items:center;text-align:center}
+.donut .hole b{font-size:22px}
+.donut .hole small{font-size:11px;color:var(--on-surface-variant)}
+
+/* bars chart */
+.bars{display:flex;align-items:flex-end;gap:12px;height:150px;padding-top:10px}
+.bars .b{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.bars .b .col{width:100%;max-width:34px;background:var(--primary-container);border-radius:6px 6px 0 0;transition:height .6s}
+.bars .b .col.alt{background:var(--inverse-primary)}
+.bars .b small{font-size:11px;color:var(--on-surface-variant)}
+
+/* timeline */
+.tl{position:relative;padding-left:26px}
+.tl::before{content:"";position:absolute;left:7px;top:4px;bottom:4px;width:2px;background:var(--outline-variant)}
+.tl .it{position:relative;padding-bottom:16px}
+.tl .it .dot{position:absolute;left:-24px;top:2px;width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid var(--primary-container)}
+.tl .it.done .dot{background:var(--primary-container)}
+.tl .it.cur .dot{border-color:var(--accent-red);box-shadow:0 0 0 4px var(--error-container)}
+.tl .it .t{font-size:14px;font-weight:600}
+.tl .it .d{font-size:12px;color:var(--on-surface-variant)}
+
+/* alert row */
+.alert{display:flex;gap:11px;align-items:flex-start;padding:12px;border-radius:var(--r-md);background:var(--scLow);border:1px solid var(--outline-variant);margin-bottom:10px}
+.alert.err{background:#fff2f1;border-color:#f3c6c2}
+.alert .ai{flex:0 0 auto;color:var(--accent-red);margin-top:1px}
+.alert h4{font-size:13px}
+.alert p{font-size:12px;color:var(--on-surface-variant)}
+
+/* tabs */
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--outline-variant);margin-bottom:18px;flex-wrap:wrap}
+.tabs button{background:none;border:none;padding:10px 14px;font-size:14px;font-weight:600;color:var(--on-surface-variant);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button.on{color:var(--primary-container);border-bottom-color:var(--accent-red)}
+
+/* attendance grid */
+.att-cell{width:30px;height:30px;border-radius:7px;display:inline-grid;place-items:center;margin:0 auto}
+.att-p{background:var(--success-bg);color:var(--success)}
+.att-a{background:var(--error-container);color:var(--on-error-container)}
+.att-l{background:var(--warn-bg);color:var(--warn)}
+
+/* doc grid */
+.doc{display:flex;gap:12px;align-items:center;padding:14px;border:1px solid var(--outline-variant);border-radius:var(--r-md);background:#fff}
+.doc .di{width:40px;height:40px;border-radius:8px;background:var(--sc);color:var(--primary-container);display:grid;place-items:center;flex:0 0 auto}
+.doc h4{font-size:14px}
+.doc p{font-size:12px;color:var(--on-surface-variant)}
+
+/* mentor row */
+.mentor{display:flex;gap:11px;align-items:center;padding:11px 0;border-bottom:1px solid var(--outline-variant)}
+.mentor:last-child{border-bottom:none}
+.mentor .av{background:var(--inverse-primary);color:var(--primary)}
+
+/* selection layout */
+.sel-wrap{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;align-items:start}
+@media(max-width:1000px){.sel-wrap{grid-template-columns:1fr}}
+.cand{display:flex;gap:12px;align-items:center;padding:13px 14px;border:1px solid var(--outline-variant);border-radius:var(--r-md);background:#fff;margin-bottom:10px;cursor:pointer;transition:.12s}
+.cand:hover{border-color:var(--primary-container);background:var(--scLow)}
+.cand.on{border-color:var(--primary-container);box-shadow:0 0 0 2px var(--primary-container) inset}
+.video-ph{aspect-ratio:16/9;background:linear-gradient(135deg,var(--inverse-surface),var(--primary-container));border-radius:var(--r-md);display:grid;place-items:center;color:#fff;position:relative;overflow:hidden}
+.video-ph .play{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.9);display:grid;place-items:center;color:var(--primary)}
+.video-ph .time{position:absolute;bottom:8px;right:10px;font-size:11px;background:rgba(0,0,0,.55);color:#fff;padding:2px 7px;border-radius:4px}
+
+/* enrolment wizard */
+.wiz{max-width:760px;margin:0 auto}
+.steps{display:flex;gap:6px;margin-bottom:22px}
+.steps .st{flex:1;text-align:center;font-size:12px;font-weight:600;color:var(--on-surface-variant);padding-top:22px;position:relative}
+.steps .st::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:20px;height:20px;border-radius:50%;background:var(--scHigh);border:2px solid var(--outline-variant)}
+.steps .st.done::before{background:var(--success);border-color:var(--success)}
+.steps .st.cur::before{background:var(--primary-container);border-color:var(--primary-container)}
+.steps .st.cur{color:var(--primary-container)}
+.face{width:180px;height:180px;border-radius:50%;margin:10px auto;border:3px dashed var(--outline-variant);display:grid;place-items:center;color:var(--on-surface-variant);position:relative;overflow:hidden;background:var(--scLow)}
+.face.scan::after{content:"";position:absolute;left:0;right:0;height:3px;background:var(--accent-red);box-shadow:0 0 10px var(--accent-red);animation:scan 1.4s linear infinite}
+@keyframes scan{0%{top:8%}50%{top:88%}100%{top:8%}}
+.face.ok{border-color:var(--success);border-style:solid;color:var(--success)}
+.consent{background:var(--scLow);border:1px solid var(--outline-variant);border-radius:var(--r-md);padding:16px;font-size:13px;color:var(--on-surface-variant);max-height:200px;overflow:auto;line-height:1.6}
+.check-line{display:flex;gap:10px;align-items:center;margin-top:14px;font-size:14px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--on-surface-variant);margin-bottom:5px}
+.field input{width:100%;padding:10px 12px;border:1px solid var(--outline-variant);border-radius:var(--r);font-family:inherit;font-size:14px;outline:none}
+.field input:focus{border-color:var(--primary-container);box-shadow:0 0 0 2px var(--scHigh)}
+
+/* toast */
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--inverse-surface);color:#fff;padding:12px 18px;border-radius:var(--r-md);font-size:14px;font-weight:500;opacity:0;pointer-events:none;transition:.3s;z-index:80;display:flex;gap:10px;align-items:center;box-shadow:0 8px 30px rgba(0,0,0,.2)}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast svg{color:#7ee2a8}
+
+.sec-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--on-surface-variant);margin:22px 0 12px}
+.row-split{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.list-line{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--outline-variant);font-size:14px}
+.list-line:last-child{border-bottom:none}
+.badge-count{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:99px;background:var(--accent-red);color:#fff;font-size:11px;font-weight:700}
+.pill-tab{display:inline-block;background:var(--sc);color:var(--primary-container);font-weight:600;font-size:12px;padding:3px 10px;border-radius:99px}
+</style>
+</head>
+<body>
+
+<!-- LOGIN / ROLE PICKER -->
+<div id="login">
+  <div class="login-card">
+    <div class="login-brand">
+      <div>
+        <div class="lg"><span class="sq">L</span> LAMARR</div>
+        <div class="bar"></div>
+        <h1>Bienvenido a la plataforma LAMARR</h1>
+        <p>Trazabilidad de extremo a extremo del ciclo de vida de los participantes del Proyecto LAMARR. Seleccione su perfil para explorar el demo con datos simulados.</p>
+      </div>
+      <div class="foot">République Expertise · Institutional Management<br>© Demo — Sidere AI para Expertise France</div>
+    </div>
+    <div class="login-body">
+      <h2>Seleccione su perfil</h2>
+      <p class="sub">Cada rol accede a los módulos habilitados según su ámbito. Podrá cambiar de rol en cualquier momento dentro del demo.</p>
+      <div class="roles">
+        <button class="role-btn" data-role="EF">
+          <span class="ri"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg></span>
+          <div><h3>Expertise France</h3><p>Visión global, autorizaciones, dashboards SERA EF y auditoría.</p></div>
+        </button>
+        <button class="role-btn" data-role="Operador">
+          <span class="ri"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l7 4v6c0 4.4-3 7.4-7 9-4-1.6-7-4.6-7-9V6z"/></svg></span>
+          <div><h3>Operador</h3><p>Supervisión territorial, viáticos, deserciones y reportes.</p></div>
+        </button>
+        <button class="role-btn" data-role="CFP">
+          <span class="ri"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 5h16v14H4zM4 9h16M9 5v14"/></svg></span>
+          <div><h3>Centro de Formación</h3><p>Eventos, asistencia en campo, calificaciones y formularios.</p></div>
+        </button>
+        <button class="role-btn" data-role="Participante">
+          <span class="ri"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></span>
+          <div><h3>Participante</h3><p>Enrolamiento, avance en el PATH, asistencia y viáticos.</p></div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><span class="sq">L</span> <div>LAMARR<small>Institutional Management</small></div></div>
+    <nav class="nav" id="nav"></nav>
+    <div class="who" id="who"></div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <header class="topbar">
+    <button class="iconbtn hamb" id="hamb"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    <div class="search"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg><input placeholder="Buscar participantes, eventos, documentos…" /></div>
+    <div class="tb-right">
+      <button class="iconbtn"><span class="badge"></span><svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1112 0c0 7 3 9 3 9H3s3-2 3-9M10 21a2 2 0 004 0"/></svg></button>
+      <button class="iconbtn"><svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg></button>
+      <div class="role-switch">
+        <svg width="15" height="15" fill="none" stroke="var(--primary-container)" stroke-width="2" viewBox="0 0 24 24"><path d="M8 3v4M16 3v4M4 11h16M5 7h14v13H5z"/></svg>
+        <select id="roleSel">
+          <option value="EF">Expertise France</option>
+          <option value="Operador">Operador</option>
+          <option value="CFP">Centro de Formación</option>
+          <option value="Participante">Participante</option>
+        </select>
+      </div>
+      <button class="iconbtn" data-action="logout" title="Salir"><svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 3h4v18h-4M10 17l5-5-5-5M15 12H3"/></svg></button>
+    </div>
+  </header>
+
+  <main class="main"><div class="view" id="view"></div></main>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ============ DATOS SIMULADOS ============ */
+const DATA = {
+  program: { name:'Proyecto LAMARR', cohort:'Cohorte Alpha 2024' },
+  kpis: { matriculados:4285, meta:5000, retencion:82.1, satisfaccion:72, progreso:68.4, insercion:24, viaticoSemana:4520, alertas:3 },
+  cfps:[
+    {id:'CFP-SS', name:'CFP San Salvador', region:'Central', part:1180, ret:84},
+    {id:'CFP-SA', name:'CFP Santa Ana', region:'Occidental', part:920, ret:80},
+    {id:'CFP-SM', name:'CFP San Miguel', region:'Oriental', part:760, ret:78},
+    {id:'CFP-SO', name:'CFP Sonsonate', region:'Occidental', part:640, ret:81},
+  ],
+  participants:[
+    {id:'EF-0492', name:'Elena Rostova', init:'ER', role:'Especialista en Cooperación', cfp:'CFP San Salvador', phase:'Mentoreo', status:'Activo', att:94, grade:8.7, viatico:250, selStage:'Entrevista Técnica', selStatus:'proceso', psico:'94/100'},
+    {id:'PS-1180', name:'Mateo Paredes', init:'MP', role:'Analista de Políticas Públicas', cfp:'CFP Santa Ana', phase:'Activación', status:'Activo', att:88, grade:7.9, viatico:250, selStage:'Pruebas Psicométricas', selStatus:'proceso', psico:'88/100'},
+    {id:'JV-0731', name:'Julián Vance', init:'JV', role:'Gestor de Proyectos', cfp:'CFP San Miguel', phase:'—', status:'Rechazado', att:0, grade:0, viatico:0, selStage:'Comité de Selección', selStatus:'rechazado', psico:'—'},
+    {id:'RC-8901', name:'Roberto Carlos', init:'RC', role:'Estudiante · Desarrollo Web', cfp:'CFP San Salvador', phase:'Transformación', status:'Activo', att:98, grade:9.1, viatico:250, selStage:'Matriculado', selStatus:'ok', psico:'91/100'},
+    {id:'JP-4567', name:'Juan Pérez', init:'JP', role:'Estudiante · Análisis de Datos', cfp:'CFP San Salvador', phase:'Alineación', status:'Alerta', att:82, grade:7.2, viatico:250, selStage:'Matriculado', selStatus:'ok', psico:'86/100'},
+    {id:'ML-3345', name:'María López', init:'ML', role:'Estudiante · Diseño UX', cfp:'CFP Santa Ana', phase:'Activación', status:'Riesgo', att:61, grade:6.4, viatico:200, selStage:'Matriculado', selStatus:'ok', psico:'79/100'},
+    {id:'AM-1123', name:'Ana Martínez', init:'AM', role:'Estudiante · Ciberseguridad', cfp:'CFP Sonsonate', phase:'Mentoreo', status:'Activo', att:96, grade:8.9, viatico:250, selStage:'Matriculado', selStatus:'ok', psico:'93/100'},
+    {id:'CD-2288', name:'Carlos Díaz', init:'CD', role:'Estudiante · Programación', cfp:'CFP San Miguel', phase:'Expansión', status:'Activo', att:99, grade:9.4, viatico:250, selStage:'Matriculado', selStatus:'ok', psico:'95/100'},
+  ],
+  week:{ label:'Semana 41 · 6–10 Oct', days:['L','M','M','J','V'],
+    rows:[
+      {id:'RC-8901', name:'Roberto Carlos', init:'RC', marks:['p','p','p','p','p'], dev:250},
+      {id:'JP-4567', name:'Juan Pérez', init:'JP', marks:['p','p','l','p','p'], dev:250, flag:'Doble pago detectado en 08/10'},
+      {id:'ML-3345', name:'María López', init:'ML', marks:['p','a','p','a','a'], dev:200, flag:'Inasistencia crítica (>3 faltas)'},
+      {id:'AM-1123', name:'Ana Martínez', init:'AM', marks:['p','p','p','p','p'], dev:250},
+      {id:'CD-2288', name:'Carlos Díaz', init:'CD', marks:['p','p','p','p','p'], dev:250},
+    ]},
+  liquidaciones:[
+    {id:'LQ-2041', part:'Roberto Carlos', type:'Viáticos', amount:250, date:'10 Oct', status:'Aprobada'},
+    {id:'LQ-2042', part:'Ana Martínez', type:'Viáticos', amount:250, date:'10 Oct', status:'Pagada'},
+    {id:'LQ-2043', part:'Elena Rostova', type:'Incentivo PATH', amount:150, date:'09 Oct', status:'Pendiente'},
+    {id:'LQ-2044', part:'Juan Pérez', type:'Viáticos', amount:250, date:'10 Oct', status:'Revisión'},
+    {id:'LQ-2045', part:'Carlos Díaz', type:'Viáticos', amount:250, date:'10 Oct', status:'Conciliada'},
+  ],
+  docs:[
+    {name:'Acta de consentimiento', meta:'Elena Rostova · PDF · 12 Oct', type:'consent'},
+    {name:'Carta compromiso', meta:'Roberto Carlos · PDF · 11 Oct', type:'doc'},
+    {name:'IP-17 · Registro de deserción', meta:'María López · PDF · 10 Oct', type:'alert'},
+    {name:'Reporte de liquidación semanal', meta:'CFP San Salvador · XLSX · 10 Oct', type:'sheet'},
+    {name:'Guía de Macroeconomía', meta:'Material · PDF · 24 MB', type:'book'},
+    {name:'Dataset econométrico 2024', meta:'Material · CSV · 2.1 MB', type:'sheet'},
+  ],
+  mentors:[
+    {name:'Dra. Sonia Jenkins', init:'SJ', area:'Ciencia de Datos', status:'Disponible'},
+    {name:'Marcus Chan', init:'MC', area:'Ingeniería de Sistemas', status:'Ocupado'},
+    {name:'Elena Rodríguez', init:'ER', area:'UX y Estrategia de Producto', status:'Disponible'},
+  ],
+  indicators:[
+    {name:'Jóvenes matriculados', val:'4,285', meta:'Meta 5,000', p:86, src:'Enrolamiento'},
+    {name:'Tasa de retención', val:'82.1%', meta:'Meta ≥ 80%', p:82, src:'Asistencia'},
+    {name:'Progreso curricular', val:'68.4%', meta:'Avance de cohorte', p:68, src:'Académico'},
+    {name:'Satisfacción de calidad', val:'72/100', meta:'Encuestas SERA EF', p:72, src:'Encuestas'},
+    {name:'Inserción laboral (4m)', val:'24', meta:'Empleabilidad', p:48, src:'Empleabilidad'},
+    {name:'Cobertura de CFPs', val:'4 / 4', meta:'Regiones activas', p:100, src:'Programa'},
+  ],
+  employability:[
+    {part:'Carlos Díaz', company:'Tech Solutions SV', role:'Jr. Developer', status:'Activo', months:'2 meses'},
+    {part:'Ana Martínez', company:'DataSeguro', role:'Analista SOC', status:'Activo', months:'4 meses'},
+    {part:'Elena Rostova', company:'—', role:'En intermediación', status:'Gestión', months:'—'},
+    {part:'Roberto Carlos', company:'Webly Studio', role:'Frontend', status:'Ascenso', months:'6 meses'},
+  ],
+  pathPhases:['Selección','Activación','Mentoreo','Alineación','Transformación','Expansión']
+};
+
+/* ============ MENÚS POR ROL ============ */
+const ICONS={
+  dashboard:'<path d="M3 3h8v8H3zM13 3h8v5h-8zM13 10h8v11h-8zM3 13h8v8H3z"/>',
+  seleccion:'<path d="M9 11l3 3 8-8M4 4h11M4 9h5M4 14h5M4 19h9"/>',
+  users:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 4a3 3 0 010 6M18 20c0-2.5-1-4.7-2.6-6"/>',
+  money:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 10v4M18 10v4"/>',
+  liquid:'<path d="M4 4h16v16H4z" opacity=".0"/><path d="M6 3h12v18l-6-3-6 3z"/>',
+  docs:'<path d="M6 2h9l5 5v15H6zM15 2v5h5"/>',
+  mentor:'<circle cx="12" cy="7" r="3"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/><path d="M17 10l2 2 3-3"/>',
+  academic:'<path d="M22 10L12 5 2 10l10 5 10-5zM6 12v5c0 1 3 3 6 3s6-2 6-3v-5"/>',
+  job:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/>',
+  sera:'<path d="M4 19V5M4 19h16M8 16v-5M12 16V8M16 16v-8"/>',
+  live:'<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 010 18M9 12l2 2 4-4"/>',
+  config:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>'
+};
+function ic(k){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(ICONS[k]||'')+'</svg>';}
+
+const MENUS={
+  EF:[['sec','Panel'],['dashboard','Dashboard','dashboard'],['seleccion','Gestión de Selección','seleccion'],['users','Participantes','users'],
+      ['sec','Operación'],['money','Asistencia y Viáticos','money'],['liquid','Liquidaciones','liquid'],['mentor','Servicios y Mentorías','mentor'],['academic','Vista Académica','academic'],['job','Empleabilidad','job'],
+      ['sec','Monitoreo'],['sera','SERA EF · Indicadores','sera'],['docs','Repositorio','docs'],['config','Configuración','config']],
+  Operador:[['sec','Panel'],['dashboard','Dashboard','dashboard'],['money','Asistencia y Viáticos','money'],['liquid','Liquidaciones','liquid'],
+      ['sec','Gestión'],['seleccion','Selección','seleccion'],['users','Participantes','users'],['docs','Repositorio','docs']],
+  CFP:[['sec','Panel'],['dashboard','Dashboard','dashboard'],['money','Eventos y Asistencia','money'],['users','Participantes','users'],['academic','Calificaciones','academic'],['docs','Documentos','docs']],
+  Participante:[['sec','Mi espacio'],['dashboard','Mi Tablero','dashboard'],['live','Enrolamiento · Prueba de vida','live'],['users','Mi PATH','users'],['money','Mi Asistencia y Viáticos','money'],['mentor','Mentorías','mentor'],['docs','Repositorio','docs']]
+};
+const ROLE_LABEL={EF:'Expertise France',Operador:'Operador',CFP:'Centro de Formación',Participante:'Participante'};
+const ROLE_USER={EF:{n:'Camille Laurent',i:'CL'},Operador:{n:'Óscar Menjívar',i:'OM'},CFP:{n:'CFP San Salvador',i:'SS'},Participante:{n:'Elena Rostova',i:'ER'}};
+
+/* ============ ESTADO ============ */
+const S={ role:'EF', view:'dashboard', pid:null, ptab:'path', cand:'EF-0492', enroll:1, enrollData:{} };
+
+/* ============ HELPERS ============ */
+const $=s=>document.querySelector(s);
+const el=(h)=>{const t=document.createElement('template');t.innerHTML=h.trim();return t.content.firstElementChild;};
+function toast(msg){const t=$('#toast');t.innerHTML='<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg>'+msg;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2600);}
+function statusChip(s){
+  const m={Activo:'c-ok',Aprobada:'c-ok',Pagada:'c-ok',Conciliada:'c-ok',Disponible:'c-ok',Ascenso:'c-ok',ok:'c-ok',
+    Pendiente:'c-warn',Revisión:'c-warn',Alerta:'c-warn',Gestión:'c-warn',Ocupado:'c-warn',proceso:'c-warn',
+    Riesgo:'c-err',Rechazado:'c-err',rechazado:'c-err',
+    };
+  const lbl={ok:'Matriculado',proceso:'En proceso',rechazado:'Rechazado'};
+  return `<span class="chip ${m[s]||'c-mut'}">${lbl[s]||s}</span>`;
+}
+
+/* ============ VISTAS ============ */
+const V={};
+
+V.dashboard=()=>{
+  if(S.role==='Participante') return V.miTablero();
+  const k=DATA.kpis;
+  return `
+  ${head('Dashboard',S.role==='EF'?'Vista global · '+DATA.program.cohort:'Panel operativo · '+DATA.program.cohort,
+    `<button class="btn btn-outline btn-sm" data-action="toast" data-msg="Reporte generado (demo)"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg> Exportar informe</button>`)}
+  <div class="grid g4">
+    ${kpi('users','Participantes activos',fmt(k.matriculados),'+12% vs cohorte previa','up')}
+    ${kpi('sera','Tasa de retención',k.retencion+'%','Meta ≥ 80%','up')}
+    ${kpi('academic','Progreso curricular',k.progreso+'%','Avance de cohorte','up')}
+    ${kpi('money','Total a pagar (semana)','$'+fmt(k.viaticoSemana),'Semana 41','')}
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card">
+      <div class="card-title"><h3>Cobertura de Centros de Formación</h3><span class="pill-tab">4 regiones</span></div>
+      <table class="tbl"><thead><tr><th>Centro</th><th>Región</th><th>Participantes</th><th>Retención</th></tr></thead><tbody>
+      ${DATA.cfps.map(c=>`<tr><td><strong>${c.name}</strong></td><td class="muted">${c.region}</td><td>${fmt(c.part)}</td>
+        <td><div style="display:flex;align-items:center;gap:8px"><div class="pbar" style="width:70px"><span style="width:${c.ret}%"></span></div>${c.ret}%</div></td></tr>`).join('')}
+      </tbody></table>
+    </div>
+    <div class="card">
+      <div class="card-title"><h3>Alertas críticas</h3><span class="badge-count">3</span></div>
+      ${alert('err','Inasistencia crítica','María López registra >3 faltas consecutivas — riesgo de deserción.')}
+      ${alert('err','Doble pago detectado','Juan Pérez registrado en dos sedes el 08/10 — requiere conciliación.')}
+      ${alert('','Presupuesto de viáticos','Semana 41 al 90% del techo asignado al operador.')}
+      <button class="btn btn-outline btn-sm" style="margin-top:6px" data-nav="money">Ir a Asistencia y Viáticos</button>
+    </div>
+  </div>
+  <div class="grid g3" style="margin-top:16px">
+    <div class="card" style="grid-column:span 2">
+      <div class="card-title"><h3>Matriculación por CFP</h3><span class="muted small">Cohorte Alpha 2024</span></div>
+      <div class="bars">
+        ${DATA.cfps.map(c=>`<div class="b"><div class="col" style="height:${Math.round(c.part/12)}%"></div><small>${c.name.split(' ').slice(-1)}</small></div>`).join('')}
+      </div>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+      <div class="donut" style="--p:${k.satisfaccion};"><div class="hole"><div><b>${k.satisfaccion}</b><small>/100</small></div></div></div>
+      <h3 style="margin-top:12px;font-size:15px">Satisfacción de calidad</h3>
+      <p class="muted small">Índice agregado · encuestas SERA EF</p>
+    </div>
+  </div>`;
+};
+
+V.seleccion=()=>{
+  const c=DATA.participants.find(p=>p.id===S.cand)||DATA.participants[0];
+  return `
+  ${head('Gestión de Selección','Monitoreo y evaluación de postulantes activos en el programa.',
+    `<button class="btn btn-outline btn-sm" data-action="toast" data-msg="Reporte exportado (demo)">Exportar reporte</button>`)}
+  <div class="sel-wrap">
+    <div class="card">
+      <div class="card-title"><h3>Postulantes</h3><span class="pill-tab">Todas las etapas</span></div>
+      ${DATA.participants.slice(0,6).map(p=>`
+        <div class="cand ${p.id===S.cand?'on':''}" data-candidate="${p.id}">
+          <span class="av">${p.init}</span>
+          <div style="flex:1"><div class="person"><div><div class="nm">${p.name}</div><div class="rl">${p.role}</div></div></div></div>
+          <div style="text-align:right">${statusChip(p.selStatus)}<div class="muted small" style="margin-top:4px">${p.selStage}</div></div>
+        </div>`).join('')}
+    </div>
+    <div class="card">
+      <div class="person" style="margin-bottom:14px"><span class="av" style="width:44px;height:44px">${c.init}</span>
+        <div><div class="nm" style="font-size:16px">${c.name}</div><div class="rl">ID ${c.id} · ${c.role}</div></div></div>
+      <div class="sec-title" style="margin-top:0">Video de motivación</div>
+      <div class="video-ph"><div class="play"><svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="time">02:41</span></div>
+      <div class="sec-title">Línea de tiempo</div>
+      <div class="tl">
+        <div class="it done"><span class="dot"></span><div class="t">Preselección documental</div><div class="d">Aprobado · Std. automático</div></div>
+        <div class="it done"><span class="dot"></span><div class="t">Pruebas psicométricas</div><div class="d">Puntuación ${c.psico} · apto para liderazgo</div></div>
+        <div class="it cur"><span class="dot"></span><div class="t">${c.selStage}</div><div class="d">Evaluador: Dr. Aris Thorne · en curso</div></div>
+        <div class="it"><span class="dot"></span><div class="t">Comité de selección final</div><div class="d">Pendiente de programación</div></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button class="btn btn-danger" style="flex:1;justify-content:center" data-action="reject" data-id="${c.id}">Rechazar</button>
+        <button class="btn btn-primary" style="flex:2;justify-content:center" data-action="approve" data-id="${c.id}">Aprobar a siguiente etapa</button>
+      </div>
+    </div>
+  </div>`;
+};
+
+V.users=()=>{
+  if(S.pid) return participantDetail();
+  if(S.role==='Participante'){ S.pid='EF-0492'; return participantDetail(); }
+  return `
+  ${head('Participantes','Expediente único de cada participante del programa.',
+    `<button class="btn btn-primary btn-sm" data-nav="live"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Nuevo enrolamiento</button>`)}
+  <div class="card pad0">
+    <table class="tbl"><thead><tr><th>Participante</th><th>CFP</th><th>Fase PATH</th><th>Asistencia</th><th>Nota</th><th>Estado</th></tr></thead><tbody>
+    ${DATA.participants.map(p=>`
+      <tr class="clickable" data-participant="${p.id}">
+        <td><div class="person"><span class="av">${p.init}</span><div><div class="nm">${p.name}</div><div class="uid">${p.id}</div></div></div></td>
+        <td class="muted">${p.cfp}</td>
+        <td>${p.phase==='—'?'<span class="muted">—</span>':`<span class="pill-tab">${p.phase}</span>`}</td>
+        <td>${p.att?`<div style="display:flex;align-items:center;gap:8px"><div class="pbar ${p.att<70?'red':''}" style="width:64px"><span style="width:${p.att}%"></span></div>${p.att}%</div>`:'<span class="muted">—</span>'}</td>
+        <td>${p.grade?`<strong>${p.grade}</strong>`:'<span class="muted">—</span>'}</td>
+        <td>${statusChip(p.status)}</td>
+      </tr>`).join('')}
+    </tbody></table>
+  </div>`;
+};
+
+function participantDetail(){
+  const p=DATA.participants.find(x=>x.id===S.pid)||DATA.participants[0];
+  const phaseIdx=DATA.pathPhases.indexOf(p.phase);
+  const tabs=[['path','Perfil y PATH'],['acad','Académico'],['viat','Asistencia y Viáticos'],['docs','Documentos'],['job','Empleabilidad']];
+  let body='';
+  if(S.ptab==='path'){
+    body=`<div class="grid g2">
+      <div class="card"><div class="card-title"><h3>Avance en el PATH</h3>${statusChip(p.status)}</div>
+        <div class="tl">${DATA.pathPhases.map((ph,i)=>`<div class="it ${i<phaseIdx?'done':''} ${i===phaseIdx?'cur':''}"><span class="dot"></span><div class="t">${ph}</div><div class="d">${i<phaseIdx?'Completado':i===phaseIdx?'Fase actual':'Pendiente'}</div></div>`).join('')}</div>
+      </div>
+      <div>
+        <div class="card"><div class="card-title"><h3>Perfil</h3></div>
+          <div class="list-line"><span class="muted">Documento</span><span class="uid">0${Math.floor(Math.random()*9)}150175-6</span></div>
+          <div class="list-line"><span class="muted">CFP</span><span>${p.cfp}</span></div>
+          <div class="list-line"><span class="muted">Rol / programa</span><span>${p.role}</span></div>
+          <div class="list-line"><span class="muted">Prueba psicométrica</span><span>${p.psico}</span></div>
+        </div>
+        <div class="card" style="margin-top:16px"><div class="card-title"><h3>Incentivos PATH</h3></div>
+          <div class="list-line"><span>Incentivo por progreso</span><span class="chip c-ok">Otorgado · $150</span></div>
+          <div class="list-line"><span>Potenciador de habilidades</span><span class="chip c-info">Elegible</span></div>
+        </div>
+      </div>
+    </div>`;
+  } else if(S.ptab==='acad'){
+    body=`<div class="grid g3">
+      ${kpi('academic','Nota promedio',p.grade||'—','Evaluación continua','')}
+      ${kpi('sera','Asistencia',p.att+'%','Requisito ≥ 85%',p.att>=85?'up':'down')}
+      ${kpi('job','Módulos completos','4 / 6','Cohorte Alpha 2024','')}
+    </div>
+    <div class="card" style="margin-top:16px"><div class="card-title"><h3>Calificaciones por módulo</h3><button class="btn btn-outline btn-sm" data-action="toast" data-msg="Reporte de desempeño exportado (PDF)">Exportar PDF</button></div>
+      <table class="tbl"><thead><tr><th>Módulo</th><th>Evaluación entrada</th><th>Evaluación salida</th><th>Estado</th></tr></thead><tbody>
+        <tr><td>Fundamentos digitales</td><td>6.8</td><td>9.0</td><td>${statusChip('Activo')}</td></tr>
+        <tr><td>Arquitectura de software</td><td>7.1</td><td>8.7</td><td>${statusChip('Activo')}</td></tr>
+        <tr><td>Gestión de proyectos ágiles</td><td>—</td><td>—</td><td><span class="chip c-warn">En curso</span></td></tr>
+        <tr><td>Habilidades blandas</td><td>—</td><td>—</td><td><span class="chip c-mut">Pendiente</span></td></tr>
+      </tbody></table></div>`;
+  } else if(S.ptab==='viat'){
+    body=`<div class="grid g3">
+      ${kpi('money','Viático devengado','$'+p.viatico,'Semana 41','')}
+      ${kpi('sera','Asistencia semanal',p.att+'%','Anti-duplicidad activa','')}
+      ${kpi('liquid','Estado de pago','Aprobado','Ciclo QA','up')}
+    </div>
+    <div class="card" style="margin-top:16px"><div class="card-title"><h3>Registro de asistencia · ${DATA.week.label}</h3></div>
+      <table class="tbl"><thead><tr><th>Día</th>${DATA.week.days.map((d,i)=>`<th style="text-align:center">${d} (${6+i})</th>`).join('')}<th style="text-align:right">Viático</th></tr></thead>
+      <tbody><tr><td class="muted">Asistencia</td>
+        ${(DATA.week.rows.find(r=>r.id===p.id)||{marks:['p','p','p','p','p']}).marks.map(m=>`<td style="text-align:center">${mark(m)}</td>`).join('')}
+        <td style="text-align:right"><strong>$${p.viatico}</strong></td></tr></tbody></table>
+    </div>`;
+  } else if(S.ptab==='docs'){
+    body=`<div class="grid g2">${DATA.docs.slice(0,4).map(docCard).join('')}</div>`;
+  } else {
+    const e=DATA.employability.find(x=>x.part===p.name);
+    body=`<div class="card"><div class="card-title"><h3>Seguimiento laboral (Épica 8)</h3></div>
+      ${e?`<div class="grid g3">
+        ${kpi('job','Empresa',e.company==='—'?'En gestión':e.company,e.role,'')}
+        ${kpi('sera','Estado laboral',e.status,e.months,'')}
+        ${kpi('academic','Actualización','Cada 3 meses','Formulario IC04','')}
+      </div>`:'<p class="muted">Sin registro laboral aún. El expediente se extenderá a la vida laboral post-formación.</p>'}
+      <div class="sec-title">Bitácora de intentos de contacto</div>
+      <div class="list-line"><span>Llamada de seguimiento</span><span class="muted">03 Oct · exitosa</span></div>
+      <div class="list-line"><span>Correo de intermediación</span><span class="muted">28 Sep · respondido</span></div>
+    </div>`;
+  }
+  return `
+  <div class="page-head"><div>
+    <div class="crumb"><span data-nav="users" style="cursor:pointer">Participantes</span> · Expediente</div>
+    <div class="person"><span class="av" style="width:46px;height:46px;font-size:16px">${p.init}</span>
+      <div><h1 style="font-size:22px">${p.name}</h1><p style="margin-top:2px">ID ${p.id} · ${p.cfp} · ${p.role}</p></div></div>
+    </div>
+    <div class="head-actions"><button class="btn btn-outline btn-sm" data-nav="users">← Volver</button>${statusChip(p.status)}</div>
+  </div>
+  <div class="tabs">${tabs.map(t=>`<button class="${S.ptab===t[0]?'on':''}" data-ptab="${t[0]}">${t[1]}</button>`).join('')}</div>
+  ${body}`;
+}
+
+V.money=()=>{
+  const w=DATA.week;
+  return `
+  ${head(S.role==='CFP'?'Eventos y Asistencia':'Asistencia y Viáticos','Jornada Formativa Q3 · '+w.label,
+    `<button class="btn btn-outline btn-sm" data-action="toast" data-msg="CSV exportado (demo)">Exportar CSV</button>
+     <button class="btn btn-primary btn-sm" data-action="toast" data-msg="Reporte de desembolso generado y enviado a QA">Generar reporte de desembolso</button>`)}
+  <div class="grid g3">
+    ${kpi('money','Total a pagar (semana)','$'+fmt(DATA.kpis.viaticoSemana),'+12% vs semana anterior','up')}
+    ${kpi('users','Participantes activos','124 / 130','95% asistencia promedio','')}
+    ${kpi('sera','Alertas activas','3','2 doble pago · 1 inasistencia','down')}
+  </div>
+  <div class="grid g3" style="margin-top:16px">
+    <div class="card" style="grid-column:span 2">
+      <div class="card-title"><h3>Registro de asistencia semanal</h3><span class="pill-tab">${w.label}</span></div>
+      <table class="tbl"><thead><tr><th>Participante</th>${w.days.map((d,i)=>`<th style="text-align:center">${d}<br><span class="muted" style="font-weight:400">${6+i}</span></th>`).join('')}<th style="text-align:right">Viático</th></tr></thead>
+      <tbody>${w.rows.map(r=>`<tr>
+        <td><div class="person"><span class="av">${r.init}</span><div><div class="nm">${r.name}</div>${r.flag?`<div class="rl" style="color:var(--accent-red)">${r.flag}</div>`:''}</div></div></td>
+        ${r.marks.map(m=>`<td style="text-align:center">${mark(m)}</td>`).join('')}
+        <td style="text-align:right"><strong>$${r.dev}</strong></td></tr>`).join('')}</tbody></table>
+    </div>
+    <div class="card"><div class="card-title"><h3>Alertas del sistema</h3></div>
+      ${alert('err','Doble pago detectado','Juan Pérez registrado en dos sedes el 08/10.')}
+      ${alert('err','Inasistencia crítica','María López con >3 faltas consecutivas.')}
+      <div class="sec-title">Leyenda</div>
+      <div class="row-split small"><span>${mark('p')} Presente</span><span>${mark('l')} Tarde</span><span>${mark('a')} Ausente</span></div>
+    </div>
+  </div>`;
+};
+
+V.liquid=()=>`
+  ${head('Justificación Administrativa y Liquidaciones','Conciliación CFP – Operador – EF con control anti-duplicidad.',
+    `<button class="btn btn-primary btn-sm" data-action="toast" data-msg="Liquidación enviada a conciliación">Nueva liquidación</button>`)}
+  <div class="grid g3">
+    ${kpi('money','Total desembolsado','$4,250,000','Acumulado del programa','')}
+    ${kpi('liquid','Liquidaciones','14','Esta semana','')}
+    ${kpi('sera','Pendiente de conciliación','$84,200','3 registros','down')}
+  </div>
+  <div class="card pad0" style="margin-top:16px">
+    <table class="tbl"><thead><tr><th>ID</th><th>Participante</th><th>Tipo</th><th>Monto</th><th>Fecha</th><th>Estado</th><th></th></tr></thead><tbody>
+    ${DATA.liquidaciones.map(l=>`<tr>
+      <td class="uid">${l.id}</td><td><strong>${l.part}</strong></td><td>${l.type}</td><td>$${l.amount}</td><td class="muted">${l.date}</td>
+      <td>${statusChip(l.status)}</td>
+      <td style="text-align:right"><button class="btn btn-outline btn-sm" data-action="toast" data-msg="Detalle de ${l.id} (demo)">Ver</button></td></tr>`).join('')}
+    </tbody></table>
+  </div>`;
+
+V.docs=()=>`
+  ${head('Repositorio de Documentos','Documentos del expediente con sello de integridad (hash) y versionado.',
+    `<button class="btn btn-outline btn-sm" data-action="toast" data-msg="Carga de documento (demo)">Subir documento</button>`)}
+  <div class="tabs"><button class="on">Todos</button><button>Consentimientos</button><button>Liquidaciones</button><button>Materiales</button></div>
+  <div class="grid g2">${DATA.docs.map(docCard).join('')}</div>`;
+
+V.mentor=()=>`
+  ${head('Servicios y Mentorías','Supervisa la progresión de los participantes y gestiona los recursos de empleabilidad.',
+    `<button class="btn btn-outline btn-sm" data-action="toast" data-msg="Reporte exportado (demo)">Exportar reporte</button>`)}
+  <div class="grid g2">
+    <div class="card"><div class="card-title"><h3>Progresión de la cohorte</h3><button class="btn btn-outline btn-sm" data-action="toast" data-msg="Métricas detalladas (demo)">Ver métricas</button></div>
+      ${progLine('Finalización de formación teórica',92)}
+      ${progLine('Módulos de habilidades blandas',64)}
+      ${progLine('Participación en mentorías activas',88)}
+      ${progLine('Preparación general para empleabilidad',78)}
+    </div>
+    <div class="card"><div class="card-title"><h3>Disponibilidad de mentores</h3><button class="btn btn-outline btn-sm" data-action="toast" data-msg="Gestión de asignaciones (demo)">Gestionar</button></div>
+      ${DATA.mentors.map(m=>`<div class="mentor"><span class="av">${m.init}</span><div style="flex:1"><div class="nm">${m.name}</div><div class="rl">${m.area}</div></div>${statusChip(m.status)}</div>`).join('')}
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px"><div class="card-title"><h3>Simulador de trabajo · Entrevistas de práctica</h3><button class="btn btn-outline btn-sm" data-action="toast" data-msg="Grabaciones (demo)">Ver grabaciones</button></div>
+    <div class="grid g3">
+      ${['Entrevista técnica','Comportamental','Arquitectura'].map((t,i)=>`<div class="video-ph"><div class="play"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="time">0${3+i}:1${i}</span></div>`).join('')}
+    </div>
+  </div>`;
+
+V.academic=()=>`
+  ${head('Vista General Académica',DATA.program.cohort+' · registros de participantes')}
+  <div class="grid g3">
+    ${kpi('sera','Promedio de asistencia','92.4%','+2% este período','up')}
+    ${kpi('academic','Nota promedio de cohorte','8.7','Escala 0–10','up')}
+    ${kpi('users','Participantes en riesgo','14','< 85% de asistencia','down')}
+  </div>
+  <div class="card pad0" style="margin-top:16px">
+    <table class="tbl"><thead><tr><th>Participante</th><th>CFP</th><th>Asistencia</th><th>Nota entrada</th><th>Nota salida</th><th>Estado</th></tr></thead><tbody>
+    ${DATA.participants.filter(p=>p.status!=='Rechazado').map(p=>`<tr class="clickable" data-participant="${p.id}">
+      <td><div class="person"><span class="av">${p.init}</span><div class="nm">${p.name}</div></div></td>
+      <td class="muted">${p.cfp}</td>
+      <td><div style="display:flex;align-items:center;gap:8px"><div class="pbar ${p.att<85?'red':'grn'}" style="width:60px"><span style="width:${p.att}%"></span></div>${p.att}%</div></td>
+      <td>${(p.grade-1.8).toFixed(1)}</td><td><strong>${p.grade}</strong></td><td>${statusChip(p.status)}</td></tr>`).join('')}
+    </tbody></table>
+  </div>`;
+
+V.job=()=>`
+  ${head('Empleabilidad y Seguimiento (Épica 8)','Rotación laboral, gestiones de intermediación y estados laborales.')}
+  <div class="grid g4">
+    ${kpi('job','Insertados','24','A 4 meses','up')}
+    ${kpi('sera','En intermediación','12','Gestión activa','')}
+    ${kpi('users','Tasa de inserción','48%','De la cohorte','up')}
+    ${kpi('academic','Ascensos','3','Seguimiento IC04','up')}
+  </div>
+  <div class="card pad0" style="margin-top:16px">
+    <table class="tbl"><thead><tr><th>Participante</th><th>Empresa</th><th>Puesto</th><th>Antigüedad</th><th>Estado</th></tr></thead><tbody>
+    ${DATA.employability.map(e=>`<tr><td><strong>${e.part}</strong></td><td class="muted">${e.company}</td><td>${e.role}</td><td class="muted">${e.months}</td><td>${statusChip(e.status)}</td></tr>`).join('')}
+    </tbody></table>
+  </div>`;
+
+V.sera=()=>`
+  ${head('Módulo SERA EF · Indicadores','Medición automatizada de los indicadores del Marco Lógico para el donante.',
+    `<button class="btn btn-outline btn-sm" data-action="toast" data-msg="Indicadores exportados (Excel)">Exportar indicadores</button>`)}
+  <div class="grid g3">
+    ${DATA.indicators.map(i=>`<div class="card"><div class="card-title"><h3 style="font-size:14px">${i.name}</h3><span class="pill-tab">${i.src}</span></div>
+      <div class="kpi"><div class="val">${i.val}</div><div class="lbl">${i.meta}</div>
+      <div class="pbar ${i.p>=80?'grn':''}" style="margin-top:10px"><span style="width:${i.p}%"></span></div></div></div>`).join('')}
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><div class="card-title"><h3>Embudo de selección</h3><span class="muted small">Tasas de conversión</span></div>
+      ${progLine('Postulaciones recibidas',100)}${progLine('Preselección documental',74)}${progLine('Pruebas psicométricas',58)}${progLine('Entrevista final',41)}${progLine('Matriculados',33)}
+    </div>
+    <div class="card"><div class="card-title"><h3>Seguimiento de deserciones</h3></div>
+      ${alert('err','IP-17 generado','María López — riesgo por inasistencia. Alerta temprana enviada al Operador.')}
+      ${alert('','Encuesta de satisfacción','Nuevo ciclo abierto para el módulo de habilidades blandas.')}
+      <div class="row-split" style="margin-top:12px"><span class="muted small">Deserciones acumuladas</span><strong>7</strong></div>
+      <div class="row-split"><span class="muted small">Tasa de deserción</span><span class="chip c-warn">3.4%</span></div>
+    </div>
+  </div>`;
+
+V.config=()=>`
+  ${head('Configuración de parámetros','Motor de reglas administrable (Épica 10) — gobernanza en dos niveles.')}
+  <div class="card pad0">
+    <table class="tbl"><thead><tr><th>Parámetro</th><th>Valor actual</th><th>Nivel</th><th></th></tr></thead><tbody>
+    ${[['Asistencia mínima','85% por participante','EF · Programa'],
+       ['Anti-duplicidad de viáticos','Máx. 1 por día calendario','EF · Programa'],
+       ['Corte de viáticos','Cálculo semanal','EF · Programa'],
+       ['Registro de deserción','Operador · IP-17 automático','EF · Programa'],
+       ['Reaplicación de postulantes','Habilitada tras 6 meses','EF · Programa'],
+       ['Formularios de aplicación','Plantilla base + CFP','CFP · dentro de límites']].map(r=>`
+      <tr><td><strong>${r[0]}</strong></td><td>${r[1]}</td><td><span class="pill-tab">${r[2]}</span></td>
+      <td style="text-align:right"><button class="btn btn-outline btn-sm" data-action="toast" data-msg="Cambio registrado en bitácora de auditoría (usuario, fecha, valor anterior/nuevo)">Editar</button></td></tr>`).join('')}
+    </tbody></table>
+  </div>
+  <p class="muted small" style="margin-top:12px">Toda modificación queda en la bitácora de auditoría inmutable con usuario, fecha, valor anterior y valor nuevo (Épicas 10 y 12).</p>`;
+
+/* ---- Participante: mi tablero ---- */
+V.miTablero=()=>{
+  const p=DATA.participants[0];
+  return `
+  ${head('Mi Tablero','Bienvenida de nuevo, '+p.name+'. Este es tu progreso actual.')}
+  <div class="grid g3">
+    ${kpi('sera','Asistencia',p.att+'% ','+2% este mes','up')}
+    ${kpi('academic','Promedio',p.grade+' / 10','Cursos activos','up')}
+    ${kpi('money','Viático semanal','$'+p.viatico,'Aprobado','up')}
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><div class="card-title"><h3>Mi avance en el PATH</h3><span class="pill-tab">${p.phase}</span></div>
+      <div class="tl">${DATA.pathPhases.map((ph,i)=>{const idx=DATA.pathPhases.indexOf(p.phase);return `<div class="it ${i<idx?'done':''} ${i===idx?'cur':''}"><span class="dot"></span><div class="t">${ph}</div></div>`}).join('')}</div>
+    </div>
+    <div>
+      <div class="card"><div class="card-title"><h3>Próximas mentorías</h3></div>
+        <div class="mentor"><span class="av">SJ</span><div style="flex:1"><div class="nm">Dra. Sonia Jenkins</div><div class="rl">Análisis de Datos Avanzado · Hoy 3:00 PM</div></div><button class="btn btn-primary btn-sm" data-action="toast" data-msg="Te uniste a la sesión (demo)">Unirse</button></div>
+        <div class="mentor"><span class="av">MC</span><div style="flex:1"><div class="nm">Marcus Chan</div><div class="rl">Arquitectura de Software · Mañana</div></div><button class="btn btn-outline btn-sm" data-action="toast" data-msg="Recordatorio activado">Recordar</button></div>
+      </div>
+      <div class="card" style="margin-top:16px"><div class="card-title"><h3>Tareas pendientes</h3><span class="badge-count">2</span></div>
+        <div class="list-line"><span>Ensayo de arquitectura</span><span class="chip c-warn">Hoy</span></div>
+        <div class="list-line"><span>Quiz: patrones de diseño</span><span class="muted">23:59</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px"><div class="card-title"><h3>Repositorio de materiales</h3><button class="btn btn-outline btn-sm" data-nav="docs">Ver todos</button></div>
+    <div class="grid g3">${DATA.docs.slice(4).concat([DATA.docs[0]]).map(docCard).join('')}</div>
+  </div>`;
+};
+
+/* ---- Enrolamiento / Prueba de vida ---- */
+V.live=()=>{
+  const step=S.enroll;
+  const stepsHtml=['Consentimiento','Prueba de vida','Documento','Confirmación'].map((t,i)=>`<div class="st ${i+1<step?'done':''} ${i+1===step?'cur':''}">${t}</div>`).join('');
+  let body='';
+  if(step===1){
+    body=`<div class="card">
+      <h3 style="margin-bottom:6px">Acta de consentimiento y verificación</h3>
+      <p class="muted small" style="margin-bottom:12px">Conforme a la Épica 1, el consentimiento se registra antes de capturar datos personales.</p>
+      <div class="consent"><strong>ACTA DE CONSENTIMIENTO Y VERIFICACIÓN</strong><br><br>
+      He leído la presente y otorgo mi consentimiento libre e informado para el tratamiento de mis datos personales dentro del Proyecto LAMARR, conforme a la Ley de Protección de Datos Personales de El Salvador. La prueba de vida se procesa localmente en el dispositivo; mi imagen no se envía a servidores de terceros. Autorizo el uso de mis datos exclusivamente para fines de selección, formación y seguimiento del programa.</div>
+      <label class="check-line"><input type="checkbox" id="cons1"> Acepto el tratamiento de datos y la política de privacidad.</label>
+      <label class="check-line"><input type="checkbox" id="cons2"> Confirmo que la información proporcionada es veraz.</label>
+      <div style="margin-top:18px;display:flex;justify-content:flex-end"><button class="btn btn-primary" data-action="enroll-next">Continuar</button></div>
+    </div>`;
+  } else if(step===2){
+    const ok=S.enrollData.live;
+    body=`<div class="card" style="text-align:center">
+      <h3>Prueba de vida · procesamiento local</h3>
+      <p class="muted small" style="max-width:440px;margin:6px auto 0">Open Liveness · verificación biométrica sin servidores externos. Detección de vida activa; sin costos de licencia.</p>
+      <div class="face ${ok?'ok':'scan'}" id="face">${ok?'<svg width="54" height="54" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg>':'<svg width="60" height="60" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><circle cx="12" cy="9" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>'}</div>
+      ${ok?`<div style="display:flex;gap:24px;justify-content:center;margin-top:6px"><div><b style="font-size:20px">99.2%</b><div class="muted small">Confianza</div></div><div><b style="font-size:20px">&lt;250ms</b><div class="muted small">Latencia</div></div><div><b style="font-size:20px;color:var(--success)">Vivo</b><div class="muted small">Resultado</div></div></div>`:''}
+      <div style="margin-top:18px;display:flex;justify-content:center;gap:10px">
+        ${ok?`<button class="btn btn-primary" data-action="enroll-next">Continuar</button>`:`<button class="btn btn-primary" data-action="liveness">Iniciar verificación</button>`}
+      </div>
+    </div>`;
+  } else if(step===3){
+    const ok=S.enrollData.ocr;
+    body=`<div class="card">
+      <h3>Lectura de documento de identidad</h3>
+      <p class="muted small" style="margin-bottom:12px">Open OCR · extracción local del documento. Los datos alimentan el expediente.</p>
+      <div class="video-ph" style="aspect-ratio:16/7"><div class="play" style="background:rgba(255,255,255,.15);color:#fff"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3"/></svg></div><span class="time">Cámara</span></div>
+      ${ok?`<div class="grid g2" style="margin-top:14px">
+        <div class="field"><label>Nombre extraído</label><input value="${S.enrollData.name||'Nuevo Participante'}" readonly></div>
+        <div class="field"><label>Documento</label><input value="0${Math.floor(Math.random()*9)}${Math.floor(1000000+Math.random()*8000000)}-4" readonly></div>
+      </div>`:`<div class="field" style="margin-top:14px"><label>Nombre completo</label><input id="enName" placeholder="Ingresa tu nombre"></div>`}
+      <div style="margin-top:8px;display:flex;justify-content:space-between">
+        <button class="btn btn-outline" data-action="enroll-prev">Atrás</button>
+        ${ok?`<button class="btn btn-primary" data-action="enroll-next">Continuar</button>`:`<button class="btn btn-primary" data-action="ocr">Extraer datos del documento</button>`}
+      </div>
+    </div>`;
+  } else {
+    body=`<div class="card" style="text-align:center">
+      <div class="face ok" style="width:96px;height:96px;margin:8px auto"><svg width="42" height="42" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg></div>
+      <h3>Enrolamiento completado</h3>
+      <p class="muted" style="max-width:420px;margin:8px auto 0">${S.enrollData.name||'El nuevo participante'} fue registrado con prueba de vida (procesamiento local) y consentimiento trazable. Se generó su expediente único y la carta compromiso.</p>
+      <div style="margin-top:18px;display:flex;gap:10px;justify-content:center">
+        <button class="btn btn-outline" data-action="enroll-reset">Nuevo enrolamiento</button>
+        <button class="btn btn-primary" data-action="enroll-open">Ver expediente</button>
+      </div>
+    </div>`;
+  }
+  return `${head('Enrolamiento · Prueba de vida','Auto-registro con prueba de vida y consentimiento — protección reforzada de menores.')}
+  <div class="wiz"><div class="steps">${stepsHtml}</div>${body}</div>`;
+};
+
+/* ============ FRAGMENTOS ============ */
+function head(title,sub,actions){return `<div class="page-head"><div><h1>${title}</h1>${sub?`<p>${sub}</p>`:''}</div>${actions?`<div class="head-actions">${actions}</div>`:''}</div>`;}
+function kpi(icon,lbl,val,delta,dir){return `<div class="card kpi"><div class="top"><div class="ic">${ic(icon)}</div></div><div class="val">${val}</div><div class="lbl">${lbl}</div>${delta?`<div class="delta ${dir}">${delta}</div>`:''}</div>`;}
+function alert(t,h,p){return `<div class="alert ${t}"><span class="ai">${t==='err'?'<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9l-8 14A2 2 0 004 21h16a2 2 0 001.7-3l-8-14a2 2 0 00-3.4 0z"/></svg>':'<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>'}</span><div><h4>${h}</h4><p>${p}</p></div></div>`;}
+function mark(m){const map={p:['att-p','✓'],a:['att-a','✕'],l:['att-l','!']};const x=map[m]||map.p;return `<span class="att-cell ${x[0]}">${x[1]}</span>`;}
+function progLine(lbl,v){return `<div style="margin-bottom:12px"><div class="row-split small" style="margin-bottom:5px"><span>${lbl}</span><strong>${v}%</strong></div><div class="pbar ${v>=80?'grn':''}"><span style="width:${v}%"></span></div></div>`;}
+function docCard(d){const icons={consent:'<path d="M9 12l2 2 4-4"/><rect x="4" y="3" width="16" height="18" rx="2"/>',doc:'<path d="M6 2h9l5 5v15H6zM15 2v5h5"/>',alert:'<path d="M12 9v4M12 17h.01M10.3 3.9l-8 14A2 2 0 004 21h16a2 2 0 001.7-3l-8-14a2 2 0 00-3.4 0z"/>',sheet:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/>',book:'<path d="M4 4h13a2 2 0 012 2v14H6a2 2 0 01-2-2z"/><path d="M8 4v16"/>'};
+  return `<div class="doc"><div class="di" style="${d.type==='alert'?'background:var(--error-container);color:var(--on-error-container)':''}"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">${icons[d.type]||icons.doc}</svg></div>
+  <div style="flex:1"><h4>${d.name}</h4><p>${d.meta}</p></div>
+  <button class="btn btn-outline btn-sm" data-action="toast" data-msg="Descargando ${d.name} (demo)">Abrir</button></div>`;}
+function fmt(n){return n.toLocaleString('es-ES');}
+
+/* ============ RENDER / ROUTER ============ */
+function renderNav(){
+  const nav=$('#nav');
+  nav.innerHTML=MENUS[S.role].map(m=>{
+    if(m[0]==='sec') return `<div class="sec">${m[1]}</div>`;
+    return `<a data-nav="${m[2]}" class="${S.view===m[2]?'active':''}">${ic(m[0])}<span>${m[1]}</span></a>`;
+  }).join('');
+  const u=ROLE_USER[S.role];
+  $('#who').innerHTML=`<span class="av">${u.i}</span><div><div class="nm">${u.n}</div><div class="rl">${ROLE_LABEL[S.role]}</div></div>`;
+  $('#roleSel').value=S.role;
+}
+function render(){
+  renderNav();
+  const fn=V[S.view]||V.dashboard;
+  $('#view').innerHTML=fn();
+  $('#view').scrollTop=0; $('.main').scrollTop=0;
+}
+function setView(v){
+  // guard: if role has no access to view, go dashboard
+  const allowed=MENUS[S.role].filter(m=>m[0]!=='sec').map(m=>m[2]);
+  if(!allowed.includes(v) && v!=='users') { v='dashboard'; }
+  S.view=v; if(v!=='users') S.pid=null;
+  closeSidebar(); render();
+}
+
+/* ============ EVENTOS ============ */
+document.addEventListener('click',(e)=>{
+  const roleBtn=e.target.closest('[data-role]');
+  if(roleBtn){ login(roleBtn.dataset.role); return; }
+  const t=e.target.closest('[data-nav],[data-action],[data-participant],[data-candidate],[data-ptab]');
+  if(!t) return;
+  if(t.dataset.nav!==undefined){ setView(t.dataset.nav); return; }
+  if(t.dataset.participant!==undefined){ S.pid=t.dataset.participant; S.view='users'; S.ptab='path'; render(); return; }
+  if(t.dataset.candidate!==undefined){ S.cand=t.dataset.candidate; render(); return; }
+  if(t.dataset.ptab!==undefined){ S.ptab=t.dataset.ptab; render(); return; }
+  const a=t.dataset.action;
+  if(a==='toast'){ toast(t.dataset.msg||'Acción realizada (demo)'); return; }
+  if(a==='logout'){ logout(); return; }
+  if(a==='approve'){ toast('Postulante aprobado a la siguiente etapa'); return; }
+  if(a==='reject'){ toast('Postulante rechazado — registro conservado'); return; }
+  if(a==='enroll-next'){ enrollNext(); return; }
+  if(a==='enroll-prev'){ S.enroll=Math.max(1,S.enroll-1); render(); return; }
+  if(a==='liveness'){ S.enrollData.live=false; render(); const f=$('#face'); setTimeout(()=>{S.enrollData.live=true; render(); toast('Prueba de vida verificada localmente · 99.2%');},1600); return; }
+  if(a==='ocr'){ const nm=$('#enName'); S.enrollData.name=(nm&&nm.value.trim())||'Nuevo Participante'; S.enrollData.ocr=true; render(); toast('Documento leído localmente (Open OCR)'); return; }
+  if(a==='enroll-reset'){ S.enroll=1; S.enrollData={}; render(); return; }
+  if(a==='enroll-open'){ addEnrolled(); return; }
+});
+function enrollNext(){
+  if(S.enroll===1){ const c1=$('#cons1'),c2=$('#cons2'); if(!(c1&&c1.checked&&c2&&c2.checked)){ toast('Debes aceptar el consentimiento para continuar'); return; } }
+  if(S.enroll===2 && !S.enrollData.live){ toast('Completa la prueba de vida'); return; }
+  if(S.enroll===3 && !S.enrollData.ocr){ toast('Extrae los datos del documento'); return; }
+  S.enroll=Math.min(4,S.enroll+1); render();
+}
+function addEnrolled(){
+  const name=S.enrollData.name||'Nuevo Participante';
+  const init=name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+  const id='NP-'+Math.floor(1000+Math.random()*8999);
+  DATA.participants.unshift({id,name,init,role:'Postulante · nuevo',cfp:'CFP San Salvador',phase:'Selección',status:'Activo',att:0,grade:0,viatico:250,selStage:'Matriculado',selStatus:'ok',psico:'—'});
+  S.enroll=1; S.enrollData={}; S.pid=id; S.view='users'; S.ptab='path';
+  if(!MENUS[S.role].some(m=>m[2]==='users')) S.view='dashboard';
+  render(); toast('Expediente único creado para '+name);
+}
+
+/* ============ LOGIN / ROLE ============ */
+function login(role){
+  S.role=role; S.view=(role==='Participante')?'dashboard':'dashboard'; S.pid=null;
+  $('#login').style.display='none'; $('#app').classList.add('on'); render();
+}
+function logout(){ $('#app').classList.remove('on'); $('#login').style.display='grid'; }
+$('#roleSel').addEventListener('change',e=>{ S.role=e.target.value; S.view='dashboard'; S.pid=null; render(); });
+
+/* sidebar mobile */
+function closeSidebar(){ $('#sidebar').classList.remove('open'); $('#scrim').classList.remove('on'); }
+$('#hamb').addEventListener('click',()=>{ $('#sidebar').classList.toggle('open'); $('#scrim').classList.toggle('on'); });
+$('#scrim').addEventListener('click',closeSidebar);
+</script>
+</body>
+</html>
