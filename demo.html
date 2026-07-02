@@ -488,6 +488,82 @@ const DATA = {
   ]
 };
 
+/* ============ VARIABLES DE NEGOCIO PARAMETRIZABLES (Épica 10) ============ */
+const PDOM={
+  fin:'Financiero · Viáticos', asi:'Asistencia', sel:'Selección', path:'PATH · Estados',
+  des:'Deserción · Alertas', emp:'Empleabilidad', doc:'Documental · Retención',
+  ind:'Indicadores SERA', cat:'Catálogos maestros', form:'Formularios', gob:'Gobernanza · Seguridad'
+};
+const PARAMS=[
+  // Financiero · Viáticos e incentivos
+  {n:'Monto base de viático diario',d:'fin',v:'$10.00 / día',t:'Monto',lvl:'EF'},
+  {n:'Montos diferenciados de viático',d:'fin',v:'Por región / CFP',t:'Lista',lvl:'EF'},
+  {n:'Periodicidad de cálculo de viáticos',d:'fin',v:'Semanal (corte y consolidación)',t:'Lista',lvl:'EF'},
+  {n:'Anti-duplicidad de viáticos',d:'fin',v:'Máx. 1 por participante / día calendario',t:'Regla',lvl:'EF'},
+  {n:'Techo presupuestal de viáticos',d:'fin',v:'Por operador / semana',t:'Monto',lvl:'EF'},
+  {n:'Incentivo PATH por progreso',d:'fin',v:'$150.00',t:'Monto',lvl:'EF'},
+  {n:'Elegibilidad de incentivos PATH',d:'fin',v:'Criterios administrables',t:'Regla',lvl:'EF'},
+  {n:'Potenciador de habilidades',d:'fin',v:'Monto y elegibilidad',t:'Regla',lvl:'EF'},
+  {n:'Vínculo incentivo → viático',d:'fin',v:'Activado (incentivo pecuniario)',t:'Booleano',lvl:'EF'},
+  // Asistencia
+  {n:'Asistencia mínima',d:'asi',v:'85% por participante',t:'%',lvl:'EF'},
+  {n:'Correcciones de asistencia',d:'asi',v:'Flujo solicitud-aprobación del Operador',t:'Flujo',lvl:'EF'},
+  {n:'Ventana de corrección de asistencia',d:'asi',v:'3 días hábiles',t:'Número',lvl:'EF'},
+  {n:'Quórum de evento / jornada',d:'asi',v:'Opcional',t:'Número',lvl:'CFP'},
+  {n:'Tolerancia de conectividad (sync offline)',d:'asi',v:'Activada',t:'Política',lvl:'EF'},
+  // Selección · Postulación
+  {n:'Orden de pasos del enrolamiento',d:'sel',v:'Consentimiento → prueba de vida → OCR',t:'Lista',lvl:'EF'},
+  {n:'Etapas del pipeline de selección',d:'sel',v:'Formulario, video, entrevista, psicométrica, final',t:'Catálogo',lvl:'EF'},
+  {n:'Reaplicación de postulantes',d:'sel',v:'Habilitada tras 6 meses',t:'Número',lvl:'EF'},
+  {n:'Consentimiento al inicio del flujo',d:'sel',v:'Obligatorio (antes de captura de datos)',t:'Booleano',lvl:'EF'},
+  {n:'Ruta de menores 16–17',d:'sel',v:'Doc. alternativo + consentimiento parental',t:'Política',lvl:'EF'},
+  {n:'Umbral de aprobación psicométrica',d:'sel',v:'≥ 70 / 100',t:'Número',lvl:'EF'},
+  // PATH · Máquina de estados
+  {n:'Fases del PATH',d:'path',v:'6 fases (Selección → Expansión)',t:'Catálogo',lvl:'EF'},
+  {n:'Condiciones de transición de fase',d:'path',v:'Servicios, asistencia, validación Operador',t:'Regla',lvl:'EF'},
+  {n:'Servicios habilitados por CFP',d:'path',v:'Mentorías, simulador, potenciadores',t:'Lista',lvl:'CFP'},
+  {n:'Elegibilidad de mentorías',d:'path',v:'Criterios administrables',t:'Regla',lvl:'EF'},
+  {n:'Retrocesos / pausas justificadas',d:'path',v:'Flujo de aprobación con motivo',t:'Flujo',lvl:'EF'},
+  // Deserción · Alertas
+  {n:'Umbral de riesgo de deserción',d:'des',v:'> 3 faltas consecutivas',t:'Número',lvl:'EF'},
+  {n:'Generación automática de IP-17',d:'des',v:'Activada',t:'Booleano',lvl:'EF'},
+  {n:'Rol que registra la deserción',d:'des',v:'Operador',t:'Lista',lvl:'EF'},
+  {n:'Alerta temprana por asistencia',d:'des',v:'Activada',t:'Booleano',lvl:'EF'},
+  // Empleabilidad · Seguimiento laboral
+  {n:'Periodicidad de actualización laboral',d:'emp',v:'Cada 3 meses (3–6 parametrizable)',t:'Número',lvl:'EF'},
+  {n:'Estados laborales',d:'emp',v:'Activo, Deserción laboral, Ascenso',t:'Catálogo',lvl:'EF'},
+  {n:'Formulario de seguimiento IC04',d:'emp',v:'Campos, validaciones, vigencia',t:'Plantilla',lvl:'CFP'},
+  {n:'Bitácora de intentos de contacto',d:'emp',v:'Activada',t:'Booleano',lvl:'EF'},
+  // Documental · Retención y cumplimiento
+  {n:'Retención de documentos del expediente',d:'doc',v:'10 años',t:'Número',lvl:'EF'},
+  {n:'Retención de logs de auditoría',d:'doc',v:'24 meses activo + archivado en frío',t:'Número',lvl:'EF'},
+  {n:'Sello de integridad (hash) y versionado',d:'doc',v:'Activado por documento',t:'Booleano',lvl:'EF'},
+  {n:'Plantillas documentales',d:'doc',v:'Acta, carta compromiso, IP-17',t:'Plantilla',lvl:'EF'},
+  {n:'Política de purga / archivado',d:'doc',v:'Configurable por normativa',t:'Política',lvl:'EF'},
+  // Indicadores · SERA EF
+  {n:'Definición de indicadores (fórmula)',d:'ind',v:'Fórmula administrable',t:'Fórmula',lvl:'EF'},
+  {n:'Fuente y periodicidad del indicador',d:'ind',v:'Por indicador',t:'Lista',lvl:'EF'},
+  {n:'Desagregaciones',d:'ind',v:'CFP, región, género, edad',t:'Lista',lvl:'EF'},
+  {n:'Metas por indicador',d:'ind',v:'Marco Lógico del donante',t:'Número',lvl:'EF'},
+  // Catálogos maestros
+  {n:'Catálogo de CFPs',d:'cat',v:'4 centros activos',t:'Catálogo',lvl:'EF'},
+  {n:'Catálogo de empresas (empleabilidad)',d:'cat',v:'Registro CAPRO',t:'Catálogo',lvl:'EF'},
+  {n:'Tipos de evento / jornada',d:'cat',v:'Catálogo administrable',t:'Catálogo',lvl:'EF'},
+  {n:'Tipos de evaluación',d:'cat',v:'Entrada / salida / continua',t:'Catálogo',lvl:'EF'},
+  {n:'Regiones / departamentos',d:'cat',v:'14 departamentos',t:'Catálogo',lvl:'EF'},
+  // Formularios dinámicos
+  {n:'Formulario de aplicación por CFP',d:'form',v:'Plantilla base personalizable',t:'Plantilla',lvl:'CFP'},
+  {n:'Reglas de validación de formularios',d:'form',v:'Dentro de límites de EF',t:'Regla',lvl:'CFP'},
+  {n:'Calendario de eventos y jornadas',d:'form',v:'Administrado por cada CFP',t:'Lista',lvl:'CFP'},
+  // Gobernanza · Seguridad · Roles
+  {n:'Roles y permisos (RBAC)',d:'gob',v:'EF, Operador, CFP, Participante',t:'Catálogo',lvl:'EF'},
+  {n:'Niveles de gobernanza',d:'gob',v:'EF (programa) vs CFP (ámbito)',t:'Política',lvl:'EF'},
+  {n:'Bitácora de auditoría inmutable',d:'gob',v:'Usuario, fecha, valor ant./nuevo',t:'Booleano',lvl:'EF'},
+  {n:'Prueba de vida · umbral de score',d:'gob',v:'≥ 90 / 100',t:'Número',lvl:'EF'},
+  {n:'Prueba de vida · reintentos y cola',d:'gob',v:'Política de reintentos + revisión manual',t:'Política',lvl:'EF'},
+  {n:'Idioma de nomenclatura / localización',d:'gob',v:'Español (ES-SV)',t:'Lista',lvl:'EF'}
+];
+
 /* ============ MENÚS POR ROL ============ */
 const ICONS={
   dashboard:'<path d="M3 3h8v8H3zM13 3h8v5h-8zM13 10h8v11h-8zM3 13h8v8H3z"/>',
@@ -1000,21 +1076,40 @@ V.sera=()=>`
     </div>
   </div>`;
 
-V.config=()=>`
-  ${head('Configuración de parámetros','Motor de reglas administrable (Épica 10) — gobernanza en dos niveles.')}
+V.config=()=>{
+  const ef=PARAMS.filter(p=>p.lvl==='EF').length, cfp=PARAMS.length-ef;
+  const doms=Object.keys(PDOM);
+  const counts={}; doms.forEach(d=>counts[d]=PARAMS.filter(p=>p.d===d).length);
+  const lvlChip=l=>l==='EF'?'<span class="chip c-info">EF · Programa</span>':'<span class="chip c-warn">CFP · ámbito</span>';
+  return `
+  ${head('Master de Parametrización','Motor de reglas administrable (Épica 10) — todas las variables de negocio configurables, con gobernanza en dos niveles y auditoría inmutable.',
+    `<button class="btn btn-outline btn-sm" data-action="dl-params"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg> Exportar master</button>`)}
+  <div class="grid g4">
+    ${kpi('config','Variables parametrizables',PARAMS.length,'Sin re-trabajo de código','')}
+    ${kpi('sera','Nivel EF · Programa',ef,'Reglas del programa','')}
+    ${kpi('users','Nivel CFP · Ámbito',cfp,'Dentro de límites de EF','')}
+    ${kpi('docs','Dominios de negocio',doms.length,'Auditoría inmutable 100%','')}
+  </div>
+  <div class="toolbar" style="margin-top:16px">
+    <input id="paramSearch" autocomplete="off" placeholder="Buscar variable, valor o nivel…">
+    <button class="fbtn on" data-dfilter="all">Todos · ${PARAMS.length}</button>
+    ${doms.map(d=>`<button class="fbtn" data-dfilter="${d}">${PDOM[d].split(' · ')[0]} · ${counts[d]}</button>`).join('')}
+  </div>
   <div class="card pad0">
-    <table class="tbl"><thead><tr><th>Parámetro</th><th>Valor actual</th><th>Nivel</th><th></th></tr></thead><tbody>
-    ${[['Asistencia mínima','85% por participante','EF · Programa'],
-       ['Anti-duplicidad de viáticos','Máx. 1 por día calendario','EF · Programa'],
-       ['Corte de viáticos','Cálculo semanal','EF · Programa'],
-       ['Registro de deserción','Operador · IP-17 automático','EF · Programa'],
-       ['Reaplicación de postulantes','Habilitada tras 6 meses','EF · Programa'],
-       ['Formularios de aplicación','Plantilla base + CFP','CFP · dentro de límites']].map(r=>`
-      <tr><td><strong>${r[0]}</strong></td><td>${r[1]}</td><td><span class="pill-tab">${r[2]}</span></td>
-      <td style="text-align:right"><button class="btn btn-outline btn-sm" data-action="toast" data-msg="Cambio registrado en bitácora de auditoría (usuario, fecha, valor anterior/nuevo)">Editar</button></td></tr>`).join('')}
+    <table class="tbl"><thead><tr><th>Variable de negocio</th><th>Dominio</th><th>Valor inicial</th><th>Tipo</th><th>Nivel</th><th></th></tr></thead><tbody>
+    ${PARAMS.map(p=>`
+      <tr data-domain="${p.d}" data-search="${(p.n+' '+PDOM[p.d]+' '+p.v+' '+p.t+' '+(p.lvl==='EF'?'ef programa':'cfp ámbito')).toLowerCase().replace(/"/g,'')}">
+        <td><strong>${p.n}</strong></td>
+        <td><span class="pill-tab">${PDOM[p.d].split(' · ')[0]}</span></td>
+        <td class="muted">${p.v}</td>
+        <td><span class="chip c-mut">${p.t}</span></td>
+        <td>${lvlChip(p.lvl)}</td>
+        <td style="text-align:right"><button class="btn btn-outline btn-sm" data-action="toast" data-msg="Cambio registrado en bitácora de auditoría: usuario, fecha, valor anterior → nuevo">Editar</button></td>
+      </tr>`).join('')}
     </tbody></table>
   </div>
-  <p class="muted small" style="margin-top:12px">Toda modificación queda en la bitácora de auditoría inmutable con usuario, fecha, valor anterior y valor nuevo (Épicas 10 y 12).</p>`;
+  <p class="muted small" style="margin-top:12px">Gobernanza en dos niveles: EF administra las reglas del programa; los CFPs solo su ámbito, dentro de los límites que EF establezca. Toda modificación queda en la bitácora de auditoría inmutable con usuario, fecha, valor anterior y valor nuevo (Épicas 10 y 12). La asignación fina de cada variable a su nivel se ratifica en el Sprint 0.</p>`;
+};
 
 /* ---- Participante: mi tablero ---- */
 V.miTablero=()=>{
@@ -1145,10 +1240,11 @@ document.addEventListener('click',(e)=>{
   if(!e.target.closest('.search')) closeSearch();
   const roleBtn=e.target.closest('[data-role]');
   if(roleBtn){ login(roleBtn.dataset.role); return; }
-  const t=e.target.closest('[data-nav],[data-action],[data-participant],[data-candidate],[data-ptab],[data-pfilter],[data-search-open],[data-notif],[data-dept]');
+  const t=e.target.closest('[data-nav],[data-action],[data-participant],[data-candidate],[data-ptab],[data-pfilter],[data-dfilter],[data-search-open],[data-notif],[data-dept]');
   if(!t) return;
   if(t.dataset.nav!==undefined){ setView(t.dataset.nav); return; }
   if(t.dataset.dept!==undefined){ S.dept=t.dataset.dept; render(); return; }
+  if(t.dataset.dfilter!==undefined){ document.querySelectorAll('[data-dfilter]').forEach(b=>b.classList.toggle('on',b===t)); applyParamFilter(); return; }
   if(t.dataset.searchOpen!==undefined){ openExpediente(t.dataset.searchOpen); return; }
   if(t.dataset.notif!==undefined){ setView(t.dataset.notif); closeNotif(); return; }
   if(t.dataset.pfilter!==undefined){ document.querySelectorAll('[data-pfilter]').forEach(b=>b.classList.toggle('on',b===t)); applyUserFilter(); return; }
@@ -1166,6 +1262,7 @@ document.addEventListener('click',(e)=>{
   if(a==='dl-attendance'){ dlAttendance(); return; }
   if(a==='dl-sera'){ dlSera(); return; }
   if(a==='dl-map'){ dlMap(); return; }
+  if(a==='dl-params'){ dlParams(); return; }
   if(a==='enroll-next'){ enrollNext(); return; }
   if(a==='enroll-prev'){ S.enroll=Math.max(1,S.enroll-1); render(); return; }
   if(a==='liveness'){ S.enrollData.live=false; render(); setTimeout(()=>{S.enrollData.live=true; render(); toast('Prueba de vida verificada localmente · 99.2%');},1600); return; }
@@ -1173,7 +1270,16 @@ document.addEventListener('click',(e)=>{
   if(a==='enroll-reset'){ S.enroll=1; S.enrollData={}; render(); return; }
   if(a==='enroll-open'){ addEnrolled(); return; }
 });
-document.addEventListener('input',e=>{ if(e.target && e.target.id==='pSearch') applyUserFilter(); });
+document.addEventListener('input',e=>{ if(e.target && e.target.id==='pSearch') applyUserFilter(); if(e.target && e.target.id==='paramSearch') applyParamFilter(); });
+function applyParamFilter(){
+  const s=document.getElementById('paramSearch'); const q=s?s.value.trim().toLowerCase():'';
+  const fb=document.querySelector('[data-dfilter].on'); const f=fb?fb.dataset.dfilter:'all';
+  document.querySelectorAll('tr[data-domain]').forEach(tr=>{
+    const okD=f==='all'||tr.dataset.domain===f;
+    const okQ=!q||(tr.dataset.search||'').includes(q);
+    tr.style.display=(okD&&okQ)?'':'none';
+  });
+}
 
 /* ---- popovers / búsqueda / filtros ---- */
 function closeNotif(){ const p=$('#notifPanel'); if(p) p.classList.remove('on'); }
@@ -1233,6 +1339,7 @@ function dlParticipants(){ const rows=[['ID','Nombre','CFP','Fase PATH','Asisten
 function dlAttendance(){ const w=DATA.week; const lbl={p:'Presente',a:'Ausente',l:'Tarde'}; const rows=[['Participante','ID',...w.days.map((d,i)=>d+(6+i)),'Viatico','Alerta'],...w.rows.map(r=>[r.name,r.id,...r.marks.map(m=>lbl[m]||m),'$'+r.dev,r.flag||''])]; downloadFile('asistencia_semana41.csv',toCSV(rows),'text/csv'); toast('Registro de asistencia descargado'); }
 function dlSera(){ const rows=[['Indicador','Valor','Meta','Avance','Fuente'],...DATA.indicators.map(i=>[i.name,i.val,i.meta,i.p+'%',i.src])]; downloadFile('indicadores_sera_ef.csv',toCSV(rows),'text/csv'); toast('indicadores_sera_ef.csv descargado'); }
 function dlMap(){ const rows=[['Departamento','Región','Participantes','Retención','CFP'],...[...DATA.departments].sort((a,b)=>b.part-a.part).map(d=>[d.name,d.region,d.part,d.ret+'%',d.cfp||'—'])]; downloadFile('territorial_lamarr.csv',toCSV(rows),'text/csv'); toast('territorial_lamarr.csv descargado'); }
+function dlParams(){ const rows=[['Variable','Dominio','Valor inicial','Tipo','Nivel'],...PARAMS.map(p=>[p.n,PDOM[p.d],p.v,p.t,p.lvl==='EF'?'EF · Programa':'CFP · ámbito'])]; downloadFile('parametros_lamarr.csv',toCSV(rows),'text/csv'); toast('parametros_lamarr.csv descargado ('+PARAMS.length+' variables)'); }
 
 /* ---- tema claro / oscuro ---- */
 const SUN='<svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>';
