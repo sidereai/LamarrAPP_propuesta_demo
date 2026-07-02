@@ -290,9 +290,11 @@ h1,h2,h3,h4 { color: var(--chart-5); font-weight: 800; letter-spacing: -0.02em; 
 .demo-cta:hover { transform: translateY(-1px); }
 .refstrip { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-top: 16px; }
 @media (max-width: 860px) { .refstrip { grid-template-columns: 1fr; } }
-.refc { background: var(--muted); border: 1px solid var(--border); border-radius: 12px; padding: 13px 15px; }
+.refc { display: block; background: var(--muted); border: 1px solid var(--border); border-radius: 12px; padding: 13px 15px; text-decoration: none; transition: border-color .15s, box-shadow .15s, transform .15s; }
+.refc:hover { border-color: #bcd3f7; box-shadow: 0 8px 20px rgba(30,58,138,.08); transform: translateY(-2px); }
 .refc h4 { font-size: .92rem; color: var(--chart-5); }
 .refc p { font-size: .79rem; color: var(--muted-foreground); margin-top: 3px; line-height: 1.4; }
+.refc .url { display: inline-flex; align-items: center; gap: 5px; margin-top: 8px; font-size: .74rem; font-weight: 700; color: var(--primary); }
 </style>
 </head>
 <body>
@@ -356,9 +358,9 @@ h1,h2,h3,h4 { color: var(--chart-5); font-weight: 800; letter-spacing: -0.02em; 
       </div>
       <a class="demo-cta fx d4" href="demo.html" target="_blank"><svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> Ver el demo interactivo (Anexo F)</a>
       <div class="refstrip fx d5">
-        <div class="refc"><h4>PulsoSV</h4><p>Portal de datos con monitoreo y dashboards — mismo núcleo de trazabilidad y reportería que exige SERA EF.</p></div>
-        <div class="refc"><h4>Codito</h4><p>Plataforma de gestión con APIs sobre la nube — arquitectura de servicios reutilizable en LAMARR.</p></div>
-        <div class="refc"><h4>PortalGuanaco</h4><p>Aplicación cloud con gestión de usuarios y roles — experiencia mobile-first y RBAC comprobados.</p></div>
+        <a class="refc" href="https://www.pulsosv.com" target="_blank" rel="noopener"><h4>PulsoSV</h4><p>Portal de datos con monitoreo y dashboards — mismo núcleo de trazabilidad y reportería que exige SERA EF.</p><span class="url"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 14a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1M14 10a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1"/></svg> www.pulsosv.com</span></a>
+        <a class="refc" href="https://sidereai.com/codito/" target="_blank" rel="noopener"><h4>Codito</h4><p>Plataforma de gestión con APIs sobre la nube — arquitectura de servicios reutilizable en LAMARR.</p><span class="url"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 14a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1M14 10a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1"/></svg> sidereai.com/codito</span></a>
+        <a class="refc" href="https://www.portalguanaco.com" target="_blank" rel="noopener"><h4>PortalGuanaco</h4><p>Aplicación cloud con gestión de usuarios y roles — experiencia mobile-first y RBAC comprobados.</p><span class="url"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 14a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1M14 10a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1"/></svg> www.portalguanaco.com</span></a>
       </div>
     </div>
         <details class="xpl"><summary><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 00-4 10c.7.7 1 1.3 1 2h6c0-.7.3-1.3 1-2a6 6 0 00-4-10z"/></svg> En simple <svg class="cv" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="xpl-body">Más allá del software, esto es lo que <b>gana el programa</b>: todo queda registrado y auditable, se evita el doble pago de viáticos y los reportes para la Unión Europea salen solos. Puedes probar la app real con el botón del demo.</div></details>
