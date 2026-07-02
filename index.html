@@ -253,6 +253,34 @@ h1,h2,h3,h4 { color: var(--chart-5); font-weight: 800; letter-spacing: -0.02em; 
 .btn:hover { background: var(--chart-3); }
 
 .note { font-size: .78rem; color: var(--muted-foreground); font-style: italic; margin-top: 12px; }
+
+/* compliance matrix (TDR) */
+.mstat { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 8px; }
+.mstat .m b { font-size: 1.7rem; font-weight: 900; color: var(--primary); line-height: 1; }
+.mstat .m span { display: block; font-size: .76rem; color: var(--muted-foreground); margin-top: 2px; }
+.cmx { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 12px; }
+@media (max-width: 860px) { .cmx { grid-template-columns: 1fr; } }
+.cmx .ci { display: flex; gap: 11px; align-items: center; background: #fff; border: 1px solid var(--border); border-radius: 11px; padding: 6px 12px; }
+.mstat { margin-top: 6px; }
+.cmx .ci .en { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 8px; background: var(--accent); color: var(--chart-4); font-weight: 800; font-size: .8rem; display: grid; place-items: center; }
+.cmx .ci .tx { flex: 1; min-width: 0; }
+.cmx .ci h4 { font-size: .88rem; margin-bottom: 1px; }
+.cmx .ci p { font-size: .77rem; color: var(--muted-foreground); line-height: 1.3; }
+.cmx .ci .fase { flex: 0 0 auto; font-size: .68rem; font-weight: 700; color: var(--chart-4); background: var(--accent); border-radius: 6px; padding: 2px 7px; white-space: nowrap; }
+.cmx .ci .ok { flex: 0 0 auto; color: var(--primary); }
+
+/* outcomes + demo + refs */
+.oc { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 18px; border-top: 3px solid var(--primary); }
+.oc .oi { width: 38px; height: 38px; border-radius: 10px; background: var(--accent); color: var(--chart-4); display: grid; place-items: center; margin-bottom: 10px; }
+.oc h3 { font-size: 1rem; margin-bottom: 4px; }
+.oc p { font-size: .85rem; color: var(--muted-foreground); line-height: 1.45; }
+.demo-cta { display: inline-flex; align-items: center; gap: 9px; margin-top: 18px; font-weight: 700; font-size: .95rem; color: #fff; text-decoration: none; background: linear-gradient(120deg,var(--chart-1),var(--chart-5)); padding: 11px 20px; border-radius: 999px; box-shadow: 0 6px 16px rgba(59,130,246,.3); }
+.demo-cta:hover { transform: translateY(-1px); }
+.refstrip { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-top: 16px; }
+@media (max-width: 860px) { .refstrip { grid-template-columns: 1fr; } }
+.refc { background: var(--muted); border: 1px solid var(--border); border-radius: 12px; padding: 13px 15px; }
+.refc h4 { font-size: .92rem; color: var(--chart-5); }
+.refc p { font-size: .79rem; color: var(--muted-foreground); margin-top: 3px; line-height: 1.4; }
 </style>
 </head>
 <body>
@@ -296,6 +324,27 @@ h1,h2,h3,h4 { color: var(--chart-5); font-weight: 800; letter-spacing: -0.02em; 
       <div class="grid g2 fx d4" style="margin-top:16px">
         <div class="card"><h3>PATH · Seguimiento específico</h3><p>El flujo del participante: preselección, perfilamiento, activación, mentoreo, alineación, transformación, expansión e inserción laboral.</p></div>
         <div class="card"><h3>SERA EF · Seguimiento transversal</h3><p>La capa de monitoreo y evaluación: calidad, control de deserciones e indicadores del Marco Lógico para el donante.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTADOS PARA EL PROGRAMA -->
+  <section class="slide">
+    <div class="slide-inner">
+      <span class="eyebrow fx">Resultados para el programa</span>
+      <h2 class="s-title fx d1">Lo que cambia para LAMARR y para el donante</h2>
+      <p class="s-lead fx d2">No es solo software: es trazabilidad de extremo a extremo y rendición de cuentas lista para auditoría de la Unión Europea.</p>
+      <div class="grid g4 fx d3" style="margin-top:22px">
+        <div class="oc"><div class="oi"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div><h3>Trazabilidad total</h3><p>Cada asistencia, viático, calificación, deserción e inserción queda registrada con soporte documental y sello de integridad (hash).</p></div>
+        <div class="oc"><div class="oi"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.4-3 7.4-7 9-4-1.6-7-4.6-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div><h3>Anti-fraude de viáticos</h3><p>Anti-duplicidad (máx. 1 por día) y conciliación CFP–Operador–EF: cada desembolso justificado y sin doble pago.</p></div>
+        <div class="oc"><div class="oi"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19V5M4 19h16M8 16v-5M12 16V8M16 16v-8"/></svg></div><h3>Rendición al donante</h3><p>Indicadores del Marco Lógico (SERA EF) medidos en automático, exportables y audit-ready para la UE en cualquier momento.</p></div>
+        <div class="oc"><div class="oi"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 4a3 3 0 010 6"/></svg></div><h3>Retención e inserción</h3><p>Alertas tempranas (IP-17) y seguimiento laboral post-formación para sostener la permanencia y la empleabilidad juvenil.</p></div>
+      </div>
+      <a class="demo-cta fx d4" href="demo.html" target="_blank"><svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> Ver el demo interactivo (Anexo F)</a>
+      <div class="refstrip fx d5">
+        <div class="refc"><h4>PulsoSV</h4><p>Portal de datos con monitoreo y dashboards — mismo núcleo de trazabilidad y reportería que exige SERA EF.</p></div>
+        <div class="refc"><h4>Codito</h4><p>Plataforma de gestión con APIs sobre la nube — arquitectura de servicios reutilizable en LAMARR.</p></div>
+        <div class="refc"><h4>PortalGuanaco</h4><p>Aplicación cloud con gestión de usuarios y roles — experiencia mobile-first y RBAC comprobados.</p></div>
       </div>
     </div>
   </section>
@@ -438,6 +487,36 @@ h1,h2,h3,h4 { color: var(--chart-5); font-weight: 800; letter-spacing: -0.02em; 
   </section>
 
   <!-- 5 · ARQUITECTURA -->
+  <!-- MATRIZ DE CUMPLIMIENTO DEL TDR -->
+  <section class="slide">
+    <div class="slide-inner">
+      <span class="eyebrow fx">Cumplimiento del TDR</span>
+      <h2 class="s-title fx d1">Las 12 épicas del TDR, cubiertas y trazadas</h2>
+      <p class="s-lead fx d2">Cada épica mapeada a su módulo y a la fase en que se entrega y se certifica por QA. Alcance cerrado desde la oferta.</p>
+      <div class="mstat fx d3">
+        <div class="m"><b>12 / 12</b><span>épicas del TDR cubiertas</span></div>
+        <div class="m"><b>100%</b><span>del alcance funcional</span></div>
+        <div class="m"><b>Sem. 10</b><span>operación crítica en producción (MVP)</span></div>
+      </div>
+      <div class="cmx fx d4">
+        <div class="ci"><span class="en">1</span><div class="tx"><h4>Enrolamiento y consentimiento</h4><p>Prueba de vida local + consentimiento trazable antes de captar datos.</p></div><span class="fase">MVP</span><span class="ok"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg></span></div>
+        <div class="ci"><span class="en">2</span><div class="tx"><h4>Selección y perfilamiento</h4><p>Pipeline multietapa configurable con historial y máquina de estados.</p></div><span class="fase">MVP</span><span class="ok"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg></span></div>
+        <div class="ci"><span class="en">3</span><div class="tx"><h4>Servicios al participante</h4><p>Mentorías, simulador, potenciadores y actividades complementarias.</p></div><span class="fase">Inc. 1</span><span class="ok"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg></span></div>
+        <div class="ci"><span class="en">4</span><div class="tx"><h4>Gestión académica</h4><p>Expediente único, calificaciones de entrada/salida y avance del PATH.</p></div><span class="fase">Inc. 1</span><span class="ok"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg></span></div>
+        <div class="ci"><span class="en">5</span><div class="tx"><h4>Asistencia y viáticos</h4><p>Motor semanal con anti-duplicidad y conciliación CFP–Operador–EF.</p></div><span class="fase">MVP</span><span class="ok"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg></span></div>
+        <div class="ci"><span class="en">6</span><div class="tx"><h4>Deserción</h4><p>Registro por Operador con IP-17 automático y alerta temprana.</p></div><span class="fase">Inc. 1</span><span class="ok"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg></span></div>
+        <div class="ci"><span class="en">7</span><div class="tx"><h4>Documental y liquidaciones</h4><p>Plantillas con hash y versionado; liquidaciones CFP–Operador–EF.</p></div><span class="fase">Inc. 1</span><span class="ok"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg></span></div>
+        <div class="ci"><span class="en">8</span><div class="tx"><h4>Empleabilidad</h4><p>Seguimiento laboral e inserción con evidencia configurable (IC04).</p></div><span class="fase">Inc. 2</span><span class="ok"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg></span></div>
+        <div class="ci"><span class="en">9</span><div class="tx"><h4>Monitoreo SERA EF</h4><p>Dashboards e indicadores del Marco Lógico, exportables al donante.</p></div><span class="fase">Inc. 2</span><span class="ok"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg></span></div>
+        <div class="ci"><span class="en">10</span><div class="tx"><h4>Motor de reglas y parámetros</h4><p>56 variables administrables con gobernanza en dos niveles (EF/CFP).</p></div><span class="fase">MVP</span><span class="ok"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg></span></div>
+        <div class="ci"><span class="en">11</span><div class="tx"><h4>Integraciones y reportes</h4><p>MS365 / SharePoint y reportes exportables para el donante.</p></div><span class="fase">Inc. 2</span><span class="ok"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg></span></div>
+        <div class="ci"><span class="en">12</span><div class="tx"><h4>Auditoría y seguridad</h4><p>Bitácora inmutable append-only con hash encadenado, exportable.</p></div><span class="fase">Transversal</span><span class="ok"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg></span></div>
+      </div>
+      <p class="plan-note fx d5" style="margin-top:8px"><strong>Numerales clave:</strong> III.I (entrega por MVP y fases) · XI.VI (demos desplegadas en testing y certificación de QA por entrega) · XI.VII (los profesionales ofertados ejecutan el trabajo). La asignación fina de cada parámetro a su nivel se ratifica en el Sprint 0.</p>
+    </div>
+  </section>
+
+  <!-- ARQUITECTURA -->
   <section class="slide">
     <div class="slide-inner">
       <span class="eyebrow fx">Arquitectura técnica</span>
@@ -519,6 +598,39 @@ h1,h2,h3,h4 { color: var(--chart-5); font-weight: 800; letter-spacing: -0.02em; 
             <li>Retención y purga configurables conforme a la normativa nacional y las reglas del donante.</li>
           </ul></div>
         </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROPIEDAD, DATOS Y SIN LOCK-IN -->
+  <section class="slide">
+    <div class="slide-inner">
+      <span class="eyebrow fx">Propiedad, datos y continuidad</span>
+      <h2 class="s-title fx d1">EF es dueño de la solución — sin lock-in</h2>
+      <p class="s-lead fx d2">El código, la infraestructura y los datos viven en las cuentas de EF desde el día uno. Al cierre, EF opera la plataforma sin depender de nosotros.</p>
+      <div class="grid g2 fx d3" style="margin-top:20px">
+        <div class="soc">
+          <div class="hd"><span class="ic ic-str"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3l7 4v6c0 4.4-3 7.4-7 9-4-1.6-7-4.6-7-9V7z"/></svg></span><h3>Propiedad de EF</h3></div>
+          <ul>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span>Código en el <strong>GitHub de EF</strong> y despliegue en su <strong>cuenta AWS</strong>; los datos residen en su base de datos.</span></li>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span>Traspaso formal al cierre: código fuente, <strong>infraestructura como código (IaC)</strong>, credenciales y documentación viva.</span></li>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span>Capacitación al equipo técnico de EF para operar y evolucionar la plataforma.</span></li>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span>Estándares abiertos —Docker, PostgreSQL, OAuth 2.0— portables y sin bases de datos propietarias.</span></li>
+          </ul>
+        </div>
+        <div class="soc">
+          <div class="hd"><span class="ic ic-opp"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 00-2 2v4M15 3h4a2 2 0 012 2v4M9 21H5a2 2 0 01-2-2v-4M15 21h4a2 2 0 002-2v-4"/></svg></span><h3>Herramientas propias, sin amarre</h3></div>
+          <ul>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span>Open Liveness, OpenOCR, OpenSignature y Attendly se licencian a EF para el proyecto, <strong>sin costo de licencia externo</strong>.</span></li>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span>Procesamiento local: <strong>sin dependencia de un servicio de terceros</strong> que EF deba contratar aparte.</span></li>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span>Componentes desacoplados y <strong>reemplazables</strong> por alternativas de mercado si EF lo decide.</span></li>
+            <li><svg class="tick" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg><span>EF conserva y opera todo lo entregado aunque termine la relación con el proveedor.</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout fx d4" style="margin-top:16px">
+        <div class="cico"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg></div>
+        <div><h4>Sin sorpresas de facturación</h4><p>Precio y plazo firmes bajo supuestos explícitos; toda extensión se gestiona por control de cambios o la bolsa de horas de compensación, nunca como adenda inesperada.</p></div>
       </div>
     </div>
   </section>
