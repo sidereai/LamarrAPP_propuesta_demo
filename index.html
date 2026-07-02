@@ -191,6 +191,16 @@ h1,h2,h3,h4 { color: var(--chart-5); font-weight: 800; letter-spacing: -0.02em; 
 .tg .body li { font-size: .88rem; color: var(--muted-foreground); margin-bottom: 5px; }
 .tagset { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 .tag { font-size: .76rem; font-weight: 500; background: var(--muted); border: 1px solid var(--border); color: var(--secondary-foreground); padding: 5px 11px; border-radius: 999px; }
+.tg summary .ttl { flex: 1; }
+.tg summary .wk { flex: 0 0 auto; font-size: .72rem; font-weight: 700; background: var(--accent); color: var(--chart-4); border: 1px solid #bcd3f7; padding: 3px 10px; border-radius: 999px; letter-spacing: .01em; white-space: nowrap; }
+.sfoot { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border); }
+.sfl { display: block; font-size: .72rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--chart-4); margin-bottom: 8px; }
+.spr { display: flex; gap: 10px; align-items: baseline; margin-bottom: 7px; }
+.spr .sw { flex: 0 0 auto; min-width: 82px; font-weight: 700; color: var(--chart-5); font-size: .76rem; background: var(--muted); border: 1px solid var(--border); padding: 2px 8px; border-radius: 6px; text-align: center; }
+.spr .sf { font-size: .85rem; color: var(--muted-foreground); }
+.plan-note { margin-top: 14px; font-size: .8rem; color: var(--muted-foreground); line-height: 1.55; }
+.plan-note strong { color: var(--chart-5); }
+@media (max-width: 520px) { .spr { flex-wrap: wrap; gap: 4px; } .tg summary .wk { font-size: .66rem; padding: 2px 7px; } }
 
 /* price band */
 .price-band { background: linear-gradient(135deg,var(--chart-5),var(--chart-3)); color: #fff; border-radius: 18px; padding: 30px; position: relative; overflow: hidden; }
@@ -344,8 +354,23 @@ h1,h2,h3,h4 { color: var(--chart-5); font-weight: 800; letter-spacing: -0.02em; 
       <span class="eyebrow fx">Solución funcional · toca para ampliar</span>
       <h2 class="s-title fx d1">MVP primero, incrementos priorizados con EF</h2>
       <div class="toggles fx d2">
+        <details class="tg">
+          <summary><span class="tnum">0</span> <span class="ttl">Sprint 0 — Descubrimiento</span> <span class="wk">Sem. 1–2</span> <span class="plus">+</span></summary>
+          <div class="body">
+            <p>Cierre de alcance y cimientos antes de codificar. Primer entregable clave del TDR.</p>
+            <ul>
+              <li>Reunión de arranque y talleres de configuración (reglas de viáticos, deserción, gobernanza)</li>
+              <li>Arquitectura detallada y provisión de ambientes AWS por infraestructura como código</li>
+              <li>Wireframes de flujos críticos, backlog priorizado y plan de releases</li>
+            </ul>
+            <div class="sfoot">
+              <span class="sfl">Entregable</span>
+              <div class="spr"><span class="sw">Sem. 1–2</span><span class="sf">Plan de Trabajo y Cronograma aprobados · backlog del MVP listo (DoR) · ambientes operativos</span></div>
+            </div>
+          </div>
+        </details>
         <details class="tg" open>
-          <summary><span class="tnum">1</span> MVP — Sprints 1–4 <span class="plus">+</span></summary>
+          <summary><span class="tnum">1</span> <span class="ttl">MVP — Sprints 1–4</span> <span class="wk">Sem. 3–10</span> <span class="plus">+</span></summary>
           <div class="body">
             <p>Habilita la operación crítica del programa desde la primera fase.</p>
             <ul>
@@ -354,11 +379,18 @@ h1,h2,h3,h4 { color: var(--chart-5); font-weight: 800; letter-spacing: -0.02em; 
               <li>Motor de viáticos: cálculo semanal, anti-duplicidad y conciliación</li>
               <li>Administración de catálogos, roles, parámetros y auditoría base</li>
             </ul>
-            <div class="tagset"><span class="tag">Épicas 1, 2, 5, 10, 12</span></div>
+            <div class="sfoot">
+              <span class="sfl">Calendario por sprint</span>
+              <div class="spr"><span class="sw">Sem. 3–4</span><span class="sf">Sprint 1 · Enrolamiento con prueba de vida y consentimiento</span></div>
+              <div class="spr"><span class="sw">Sem. 5–6</span><span class="sf">Sprint 2 · Selección multietapa y gestión de estados</span></div>
+              <div class="spr"><span class="sw">Sem. 7–8</span><span class="sf">Sprint 3 · Asistencia por evento y motor de viáticos (anti-duplicidad, conciliación)</span></div>
+              <div class="spr"><span class="sw">Sem. 9–10</span><span class="sf">Sprint 4 · Administración, RBAC, parámetros y auditoría base</span></div>
+            </div>
+            <div class="tagset"><span class="tag">Épicas 1, 2, 5, 10, 12</span><span class="tag">MVP certificado por QA</span></div>
           </div>
         </details>
         <details class="tg">
-          <summary><span class="tnum">2</span> Incremento 1 — Sprints 5–6 <span class="plus">+</span></summary>
+          <summary><span class="tnum">2</span> <span class="ttl">Incremento 1 — Sprints 5–6</span> <span class="wk">Sem. 11–14</span> <span class="plus">+</span></summary>
           <div class="body">
             <p>Servicios al participante y capa administrativo-financiera completa.</p>
             <ul>
@@ -367,11 +399,16 @@ h1,h2,h3,h4 { color: var(--chart-5); font-weight: 800; letter-spacing: -0.02em; 
               <li>Deserción e IP-17; gestión documental con plantillas</li>
               <li>Liquidaciones CFP–Operador–EF</li>
             </ul>
+            <div class="sfoot">
+              <span class="sfl">Calendario por sprint</span>
+              <div class="spr"><span class="sw">Sem. 11–12</span><span class="sf">Sprint 5 · Servicios al participante y gestión académica / expediente</span></div>
+              <div class="spr"><span class="sw">Sem. 13–14</span><span class="sf">Sprint 6 · Deserción e IP-17, gestión documental y liquidaciones</span></div>
+            </div>
             <div class="tagset"><span class="tag">Épicas 3, 4, 6, 7</span><span class="tag">Módulo E</span></div>
           </div>
         </details>
         <details class="tg">
-          <summary><span class="tnum">3</span> Incremento 2 — Sprint 7 <span class="plus">+</span></summary>
+          <summary><span class="tnum">3</span> <span class="ttl">Incremento 2 — Sprint 7</span> <span class="wk">Sem. 15–16</span> <span class="plus">+</span></summary>
           <div class="body">
             <p>Empleabilidad y la capa analítica para el donante.</p>
             <ul>
@@ -380,11 +417,15 @@ h1,h2,h3,h4 { color: var(--chart-5); font-weight: 800; letter-spacing: -0.02em; 
               <li>Reportes exportables e integraciones MS365 / SharePoint</li>
               <li>Endurecimiento de auditoría y exportación de logs</li>
             </ul>
+            <div class="sfoot">
+              <span class="sfl">Calendario por sprint</span>
+              <div class="spr"><span class="sw">Sem. 15–16</span><span class="sf">Sprint 7 · Empleabilidad, SERA EF, reportes, integraciones y hardening de auditoría</span></div>
+            </div>
             <div class="tagset"><span class="tag">Épicas 8, 9, 11, 12</span></div>
           </div>
         </details>
         <details class="tg">
-          <summary><span class="tnum">4</span> Experiencia por rol <span class="plus">+</span></summary>
+          <summary><span class="tnum">4</span> <span class="ttl">Experiencia por rol</span> <span class="plus">+</span></summary>
           <div class="body">
             <ul>
               <li><strong>EF:</strong> portal administrativo con dashboards estratégicos y auditoría.</li>
@@ -394,6 +435,7 @@ h1,h2,h3,h4 { color: var(--chart-5); font-weight: 800; letter-spacing: -0.02em; 
             </ul>
           </div>
         </details>
+        <p class="plan-note"><strong>Plan total: 10 meses.</strong> 4 de diseño y desarrollo (Sem. 1–16, sprints bisemanales con demos en la nube y aceptación condicionada a QA) + 6 de acompañamiento y estabilización (Meses 5–10). Capacitación de campo a los CFPs en Sem. 17–18.</p>
       </div>
     </div>
   </section>
