@@ -120,6 +120,7 @@ button{font-family:inherit;cursor:pointer}
 
 /* ---------- CARDS / GRID ---------- */
 .grid{display:grid;gap:16px}
+.grid>*{min-width:0}
 .g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
 @media(max-width:1000px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:1fr}}
 @media(max-width:680px){.g2,.g4{grid-template-columns:1fr}}
@@ -294,6 +295,26 @@ button{font-family:inherit;cursor:pointer}
 .fbtn{padding:6px 13px;border-radius:var(--r-full);border:1px solid var(--outline-variant);background:var(--scl);font-size:13px;font-weight:600;color:var(--on-surface-variant)}
 .fbtn:hover{border-color:var(--primary-container)}
 .fbtn.on{background:var(--primary-container);color:#fff;border-color:var(--primary-container)}
+
+/* ---------- MOBILE FIXES ---------- */
+@media(max-width:900px){
+  .card{overflow-x:auto}
+  .card.pad0{overflow:auto}
+}
+@media(max-width:680px){
+  .view{padding:18px 14px}
+  .page-head h1{font-size:21px}
+}
+@media(max-width:640px){
+  .topbar{gap:6px;padding:0 10px}
+  .topbar .search{display:none}
+  .tb-right{gap:6px}
+  .hide-sm{display:none}
+  .dd-panel{width:min(326px,92vw)}
+  .role-switch{padding:4px 4px 4px 9px;font-size:12px}
+  .role-switch select{max-width:108px;text-overflow:ellipsis}
+  .toolbar input{max-width:none}
+}
 </style>
 </head>
 <body>
@@ -353,7 +374,7 @@ button{font-family:inherit;cursor:pointer}
         <button class="iconbtn" data-action="notif-toggle" title="Notificaciones"><span class="badge"></span><svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1112 0c0 7 3 9 3 9H3s3-2 3-9M10 21a2 2 0 004 0"/></svg></button>
         <div class="dd-panel" id="notifPanel"></div>
       </div>
-      <button class="iconbtn"><svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg></button>
+      <button class="iconbtn hide-sm"><svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg></button>
       <div class="role-switch">
         <svg width="15" height="15" fill="none" stroke="var(--primary-container)" stroke-width="2" viewBox="0 0 24 24"><path d="M8 3v4M16 3v4M4 11h16M5 7h14v13H5z"/></svg>
         <select id="roleSel">
