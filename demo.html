@@ -296,6 +296,17 @@ button{font-family:inherit;cursor:pointer}
 .fbtn:hover{border-color:var(--primary-container)}
 .fbtn.on{background:var(--primary-container);color:#fff;border-color:var(--primary-container)}
 
+/* ---------- HEAT MAP (El Salvador) ---------- */
+.esmap{display:grid;grid-template-columns:repeat(7,1fr);grid-template-rows:repeat(4,1fr);gap:8px;aspect-ratio:7/4;margin-top:6px}
+.esmap .tile{border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;border:2px solid transparent;transition:transform .15s,box-shadow .15s;padding:4px;text-align:center;min-height:0}
+.esmap .tile:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.18)}
+.esmap .tile.on{border-color:var(--on-surface);box-shadow:0 0 0 2px var(--scl),0 6px 16px rgba(0,0,0,.18)}
+.esmap .tile b{font-size:13px;font-weight:800;line-height:1}
+.esmap .tile small{font-size:10px;font-weight:600;opacity:.9;margin-top:2px}
+.heat-legend{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:12px;color:var(--on-surface-variant);flex-wrap:wrap}
+.heat-bar{height:10px;min-width:120px;flex:1;border-radius:99px;background:linear-gradient(90deg,#fff3d6,#f4a259,#b91c1c)}
+@media(max-width:520px){.esmap{gap:5px}.esmap .tile b{font-size:11px}.esmap .tile small{font-size:9px}}
+
 /* ---------- MOBILE FIXES ---------- */
 @media(max-width:680px){
   .view{padding:18px 14px}
@@ -453,6 +464,22 @@ const DATA = {
     {part:'Roberto Carlos', company:'Webly Studio', role:'Frontend', status:'Ascenso', months:'6 meses'},
   ],
   pathPhases:['Selección','Activación','Mentoreo','Alineación','Transformación','Expansión'],
+  departments:[
+    {id:'AH',ab:'AH',name:'Ahuachapán',region:'Occidental',x:0,y:2,part:180,ret:79},
+    {id:'SA',ab:'SA',name:'Santa Ana',region:'Occidental',x:1,y:1,part:720,ret:80,cfp:'CFP Santa Ana'},
+    {id:'SO',ab:'SO',name:'Sonsonate',region:'Occidental',x:1,y:2,part:540,ret:81,cfp:'CFP Sonsonate'},
+    {id:'CH',ab:'CH',name:'Chalatenango',region:'Central',x:2,y:0,part:120,ret:83},
+    {id:'LL',ab:'LL',name:'La Libertad',region:'Central',x:2,y:2,part:360,ret:84},
+    {id:'SS',ab:'SS',name:'San Salvador',region:'Central',x:3,y:1,part:980,ret:84,cfp:'CFP San Salvador'},
+    {id:'CU',ab:'CU',name:'Cuscatlán',region:'Central',x:3,y:2,part:95,ret:82},
+    {id:'CA',ab:'CA',name:'Cabañas',region:'Central',x:4,y:1,part:80,ret:78},
+    {id:'LP',ab:'LP',name:'La Paz',region:'Central',x:3,y:3,part:150,ret:80},
+    {id:'SV',ab:'SV',name:'San Vicente',region:'Central',x:4,y:2,part:110,ret:81},
+    {id:'SM',ab:'SM',name:'San Miguel',region:'Oriental',x:5,y:1,part:610,ret:78,cfp:'CFP San Miguel'},
+    {id:'US',ab:'US',name:'Usulután',region:'Oriental',x:5,y:2,part:210,ret:79},
+    {id:'MO',ab:'MO',name:'Morazán',region:'Oriental',x:6,y:0,part:70,ret:77},
+    {id:'LU',ab:'LU',name:'La Unión',region:'Oriental',x:6,y:1,part:60,ret:76}
+  ],
   notifications:[
     {t:'err',h:'Inasistencia crítica',p:'María López registra >3 faltas consecutivas.',nav:'money'},
     {t:'err',h:'Doble pago detectado',p:'Juan Pérez en dos sedes el 08/10 — conciliar.',nav:'money'},
@@ -464,6 +491,7 @@ const DATA = {
 /* ============ MENÚS POR ROL ============ */
 const ICONS={
   dashboard:'<path d="M3 3h8v8H3zM13 3h8v5h-8zM13 10h8v11h-8zM3 13h8v8H3z"/>',
+  maestro:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 17.5l2 2 4-4"/>',
   seleccion:'<path d="M9 11l3 3 8-8M4 4h11M4 9h5M4 14h5M4 19h9"/>',
   users:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 4a3 3 0 010 6M18 20c0-2.5-1-4.7-2.6-6"/>',
   money:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 10v4M18 10v4"/>',
@@ -479,7 +507,7 @@ const ICONS={
 function ic(k){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(ICONS[k]||'')+'</svg>';}
 
 const MENUS={
-  EF:[['sec','Panel'],['dashboard','Dashboard','dashboard'],['seleccion','Gestión de Selección','seleccion'],['users','Participantes','users'],
+  EF:[['sec','Panel'],['dashboard','Dashboard','dashboard'],['maestro','Dashboard Maestro','maestro'],['seleccion','Gestión de Selección','seleccion'],['users','Participantes','users'],
       ['sec','Operación'],['money','Asistencia y Viáticos','money'],['liquid','Liquidaciones','liquid'],['mentor','Servicios y Mentorías','mentor'],['academic','Vista Académica','academic'],['job','Empleabilidad','job'],
       ['sec','Monitoreo'],['sera','SERA EF · Indicadores','sera'],['docs','Repositorio','docs'],['config','Configuración','config']],
   Operador:[['sec','Panel'],['dashboard','Dashboard','dashboard'],['money','Asistencia y Viáticos','money'],['liquid','Liquidaciones','liquid'],
@@ -491,7 +519,7 @@ const ROLE_LABEL={EF:'Expertise France',Operador:'Operador',CFP:'Centro de Forma
 const ROLE_USER={EF:{n:'Camille Laurent',i:'CL'},Operador:{n:'Óscar Menjívar',i:'OM'},CFP:{n:'CFP San Salvador',i:'SS'},Participante:{n:'Elena Rostova',i:'ER'}};
 
 /* ============ ESTADO ============ */
-const S={ role:'EF', view:'dashboard', pid:null, ptab:'path', cand:'EF-0492', enroll:1, enrollData:{} };
+const S={ role:'EF', view:'dashboard', pid:null, ptab:'path', cand:'EF-0492', enroll:1, enrollData:{}, dept:'SS' };
 
 /* ============ HELPERS ============ */
 const $=s=>document.querySelector(s);
@@ -635,6 +663,79 @@ function dashCFP(){
     </tbody></table>
   </div>`;
 }
+
+/* ---- Dashboard Maestro + mapa de calor ---- */
+function lerp(a,b,t){return a.map((v,i)=>Math.round(v+(b[i]-v)*t));}
+function heatColor(t){
+  const s=[[255,243,214],[244,162,89],[185,28,28]]; // pálido → ámbar → rojo
+  const c=(t<=.5)?lerp(s[0],s[1],t/.5):lerp(s[1],s[2],(t-.5)/.5);
+  return `rgb(${c[0]},${c[1]},${c[2]})`;
+}
+function esMap(){
+  const ds=DATA.departments, vals=ds.map(d=>d.part), mn=Math.min(...vals), mx=Math.max(...vals);
+  return `<div class="esmap">${ds.map(d=>{
+    const t=(d.part-mn)/(mx-mn||1), bg=heatColor(t), fg=t>0.55?'#fff':'#3a1d00';
+    return `<div class="tile ${d.id===S.dept?'on':''}" data-dept="${d.id}" style="grid-column:${d.x+1};grid-row:${d.y+1};background:${bg};color:${fg}" title="${d.name}: ${fmt(d.part)} participantes · ${d.ret}% retención${d.cfp?' · '+d.cfp:''}"><b>${d.ab}</b><small>${fmt(d.part)}</small></div>`;
+  }).join('')}</div>`;
+}
+V.maestro=()=>{
+  const ds=[...DATA.departments].sort((a,b)=>b.part-a.part);
+  const sel=DATA.departments.find(d=>d.id===S.dept)||ds[0];
+  const k=DATA.kpis;
+  return `
+  ${head('Dashboard Maestro','Vista integral de indicadores · '+DATA.program.cohort,
+    `<button class="btn btn-outline btn-sm" data-action="dl-map">Exportar territorial</button>
+     <button class="btn btn-outline btn-sm" data-action="dl-participants"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg> Exportar informe</button>`)}
+
+  <div class="sec-title" style="margin-top:0">Indicadores estratégicos · impacto y Marco Lógico</div>
+  <div class="grid g4">
+    ${kpi('job','Inserción laboral','24','48% cohorte · a 4 meses','up')}
+    ${kpi('sera','Tasa de retención',k.retencion+'%','Meta ≥ 80%','up')}
+    ${kpi('academic','Satisfacción SERA','72/100','Encuestas de calidad','up')}
+    ${kpi('users','Progreso curricular',k.progreso+'%','Avance de cohorte','up')}
+  </div>
+
+  <div class="sec-title">Indicadores intermedios · proceso y calidad</div>
+  <div class="grid g4">
+    ${kpi('sera','Tasa de deserción','3.4%','7 casos · IP-17','down')}
+    ${kpi('seleccion','Conversión de selección','33%','Postulación → matrícula','')}
+    ${kpi('academic','Δ Nota salida−entrada','+1.9','Ganancia de aprendizaje','up')}
+    ${kpi('live','Prueba de vida','99.2%','Verificación local','up')}
+  </div>
+
+  <div class="sec-title">Indicadores básicos · operación</div>
+  <div class="grid g4">
+    ${kpi('users','Matriculados',fmt(k.matriculados),'Meta 5,000','')}
+    ${kpi('sera','Asistencia promedio','92.4%','+2% período','up')}
+    ${kpi('money','Viáticos (semana)','$'+fmt(k.viaticoSemana),'Semana 41','')}
+    ${kpi('academic','CFPs activos','4 / 4','Regiones cubiertas','')}
+  </div>
+
+  <div class="grid g3" style="margin-top:16px">
+    <div class="card" style="grid-column:span 2">
+      <div class="card-title"><h3>Mapa de calor · participantes por departamento</h3><span class="pill-tab">El Salvador</span></div>
+      ${esMap()}
+      <div class="heat-legend"><span>Menor</span><div class="heat-bar"></div><span>Mayor</span><span class="muted small" style="margin-left:auto">14 departamentos · 4 CFPs · toca un departamento</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><h3>${sel.name}</h3>${sel.cfp?`<span class="pill-tab">${sel.cfp}</span>`:'<span class="chip c-mut">Sin CFP</span>'}</div>
+      <div class="kpi"><div class="val">${fmt(sel.part)}</div><div class="lbl">Participantes · región ${sel.region}</div></div>
+      <div class="list-line"><span class="muted">Retención</span><div style="display:flex;align-items:center;gap:8px"><div class="pbar ${sel.ret>=80?'grn':'red'}" style="width:70px"><span style="width:${sel.ret}%"></span></div>${sel.ret}%</div></div>
+      <div class="list-line"><span class="muted">% de la cohorte</span><strong>${(sel.part/k.matriculados*100).toFixed(1)}%</strong></div>
+      <div class="sec-title">Ranking territorial</div>
+      ${ds.slice(0,5).map((d,i)=>`<div class="list-line clickable" data-dept="${d.id}" style="cursor:pointer"><span>${i+1}. ${d.name}</span><strong>${fmt(d.part)}</strong></div>`).join('')}
+    </div>
+  </div>
+
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><div class="card-title"><h3>Embudo de selección</h3><span class="muted small">Conversión</span></div>
+      ${progLine('Postulaciones recibidas',100)}${progLine('Preselección documental',74)}${progLine('Pruebas psicométricas',58)}${progLine('Entrevista final',41)}${progLine('Matriculados',33)}
+    </div>
+    <div class="card"><div class="card-title"><h3>Indicadores del Marco Lógico (SERA EF)</h3><button class="btn btn-outline btn-sm" data-action="dl-sera">Exportar</button></div>
+      ${DATA.indicators.map(i=>`<div class="list-line"><span>${i.name}</span><div style="display:flex;align-items:center;gap:8px"><div class="pbar ${i.p>=80?'grn':''}" style="width:90px"><span style="width:${i.p}%"></span></div><strong>${i.val}</strong></div></div>`).join('')}
+    </div>
+  </div>`;
+};
 
 V.seleccion=()=>{
   const c=DATA.participants.find(p=>p.id===S.cand)||DATA.participants[0];
@@ -1044,9 +1145,10 @@ document.addEventListener('click',(e)=>{
   if(!e.target.closest('.search')) closeSearch();
   const roleBtn=e.target.closest('[data-role]');
   if(roleBtn){ login(roleBtn.dataset.role); return; }
-  const t=e.target.closest('[data-nav],[data-action],[data-participant],[data-candidate],[data-ptab],[data-pfilter],[data-search-open],[data-notif]');
+  const t=e.target.closest('[data-nav],[data-action],[data-participant],[data-candidate],[data-ptab],[data-pfilter],[data-search-open],[data-notif],[data-dept]');
   if(!t) return;
   if(t.dataset.nav!==undefined){ setView(t.dataset.nav); return; }
+  if(t.dataset.dept!==undefined){ S.dept=t.dataset.dept; render(); return; }
   if(t.dataset.searchOpen!==undefined){ openExpediente(t.dataset.searchOpen); return; }
   if(t.dataset.notif!==undefined){ setView(t.dataset.notif); closeNotif(); return; }
   if(t.dataset.pfilter!==undefined){ document.querySelectorAll('[data-pfilter]').forEach(b=>b.classList.toggle('on',b===t)); applyUserFilter(); return; }
@@ -1063,6 +1165,7 @@ document.addEventListener('click',(e)=>{
   if(a==='dl-participants'){ dlParticipants(); return; }
   if(a==='dl-attendance'){ dlAttendance(); return; }
   if(a==='dl-sera'){ dlSera(); return; }
+  if(a==='dl-map'){ dlMap(); return; }
   if(a==='enroll-next'){ enrollNext(); return; }
   if(a==='enroll-prev'){ S.enroll=Math.max(1,S.enroll-1); render(); return; }
   if(a==='liveness'){ S.enrollData.live=false; render(); setTimeout(()=>{S.enrollData.live=true; render(); toast('Prueba de vida verificada localmente · 99.2%');},1600); return; }
@@ -1129,6 +1232,7 @@ function toCSV(rows){ return '﻿'+rows.map(r=>r.map(c=>{ c=(''+c).replace(/"/g,
 function dlParticipants(){ const rows=[['ID','Nombre','CFP','Fase PATH','Asistencia','Nota','Estado'],...DATA.participants.map(p=>[p.id,p.name,p.cfp,p.phase,p.att+'%',p.grade,p.status])]; downloadFile('participantes_lamarr.csv',toCSV(rows),'text/csv'); toast('participantes_lamarr.csv descargado'); }
 function dlAttendance(){ const w=DATA.week; const lbl={p:'Presente',a:'Ausente',l:'Tarde'}; const rows=[['Participante','ID',...w.days.map((d,i)=>d+(6+i)),'Viatico','Alerta'],...w.rows.map(r=>[r.name,r.id,...r.marks.map(m=>lbl[m]||m),'$'+r.dev,r.flag||''])]; downloadFile('asistencia_semana41.csv',toCSV(rows),'text/csv'); toast('Registro de asistencia descargado'); }
 function dlSera(){ const rows=[['Indicador','Valor','Meta','Avance','Fuente'],...DATA.indicators.map(i=>[i.name,i.val,i.meta,i.p+'%',i.src])]; downloadFile('indicadores_sera_ef.csv',toCSV(rows),'text/csv'); toast('indicadores_sera_ef.csv descargado'); }
+function dlMap(){ const rows=[['Departamento','Región','Participantes','Retención','CFP'],...[...DATA.departments].sort((a,b)=>b.part-a.part).map(d=>[d.name,d.region,d.part,d.ret+'%',d.cfp||'—'])]; downloadFile('territorial_lamarr.csv',toCSV(rows),'text/csv'); toast('territorial_lamarr.csv descargado'); }
 
 /* ---- tema claro / oscuro ---- */
 const SUN='<svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>';
