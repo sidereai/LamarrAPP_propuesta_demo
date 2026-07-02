@@ -124,8 +124,8 @@ button{font-family:inherit;cursor:pointer}
 .g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
 @media(max-width:1000px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:1fr}}
 @media(max-width:680px){.g2,.g4{grid-template-columns:1fr}}
-.card{background:var(--scl);border:1px solid var(--outline-variant);border-radius:var(--r-lg);padding:18px}
-.card.pad0{padding:0;overflow:hidden}
+.card{background:var(--scl);border:1px solid var(--outline-variant);border-radius:var(--r-lg);padding:18px;overflow-x:auto}
+.card.pad0{padding:0;overflow:auto}
 .card h3{font-size:16px}
 .kpi .top{display:flex;align-items:center;justify-content:space-between}
 .kpi .ic{width:36px;height:36px;border-radius:9px;background:var(--sc);color:var(--primary-container);display:grid;place-items:center}
@@ -297,10 +297,6 @@ button{font-family:inherit;cursor:pointer}
 .fbtn.on{background:var(--primary-container);color:#fff;border-color:var(--primary-container)}
 
 /* ---------- MOBILE FIXES ---------- */
-@media(max-width:900px){
-  .card{overflow-x:auto}
-  .card.pad0{overflow:auto}
-}
 @media(max-width:680px){
   .view{padding:18px 14px}
   .page-head h1{font-size:21px}
@@ -515,9 +511,14 @@ const V={};
 
 V.dashboard=()=>{
   if(S.role==='Participante') return V.miTablero();
+  if(S.role==='Operador') return dashOperador();
+  if(S.role==='CFP') return dashCFP();
+  return dashEF();
+};
+function dashEF(){
   const k=DATA.kpis;
   return `
-  ${head('Dashboard',S.role==='EF'?'Vista global · '+DATA.program.cohort:'Panel operativo · '+DATA.program.cohort,
+  ${head('Dashboard','Vista global · '+DATA.program.cohort,
     `<button class="btn btn-outline btn-sm" data-action="dl-participants"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg> Exportar informe</button>`)}
   <div class="grid g4">
     ${kpi('users','Participantes activos',fmt(k.matriculados),'+12% vs cohorte previa','up')}
@@ -555,6 +556,85 @@ V.dashboard=()=>{
     </div>
   </div>`;
 };
+
+function dashOperador(){
+  const k=DATA.kpis;
+  return `
+  ${head('Dashboard','Panel operativo territorial · '+DATA.program.cohort,
+    `<button class="btn btn-outline btn-sm" data-action="dl-attendance"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg> Exportar semana</button>`)}
+  <div class="grid g4">
+    ${kpi('money','Total a pagar (semana)','$'+fmt(k.viaticoSemana),'Semana 41','')}
+    ${kpi('liquid','Pendiente de conciliación','$84,200','3 registros','down')}
+    ${kpi('sera','Alertas activas','3','2 doble pago · 1 inasistencia','down')}
+    ${kpi('users','Deserciones','7','Tasa 3.4%','down')}
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><div class="card-title"><h3>Liquidaciones recientes</h3><button class="btn btn-outline btn-sm" data-nav="liquid">Ver todas</button></div>
+      <table class="tbl"><thead><tr><th>ID</th><th>Participante</th><th>Monto</th><th>Estado</th></tr></thead><tbody>
+      ${DATA.liquidaciones.map(l=>`<tr><td class="uid">${l.id}</td><td><strong>${l.part}</strong></td><td>$${l.amount}</td><td>${statusChip(l.status)}</td></tr>`).join('')}
+      </tbody></table>
+    </div>
+    <div class="card"><div class="card-title"><h3>Alertas operativas</h3><span class="badge-count">3</span></div>
+      ${alert('err','Doble pago detectado','Juan Pérez registrado en dos sedes el 08/10 — requiere conciliación.')}
+      ${alert('err','Inasistencia crítica','María López con >3 faltas — IP-17 generado.')}
+      ${alert('','Presupuesto de viáticos','Semana 41 al 90% del techo asignado al operador.')}
+      <button class="btn btn-outline btn-sm" style="margin-top:6px" data-nav="money">Ir a Asistencia y Viáticos</button>
+    </div>
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><div class="card-title"><h3>Ejecución de viáticos por CFP</h3><span class="muted small">Semana 41</span></div>
+      ${DATA.cfps.map((c,i)=>progLine(c.name,[78,64,90,72][i])).join('')}
+    </div>
+    <div class="card"><div class="card-title"><h3>Seguimiento de deserciones</h3></div>
+      ${alert('err','IP-17 · María López','Alerta temprana enviada. Pendiente gestión de retención territorial.')}
+      <div class="row-split" style="margin-top:12px"><span class="muted small">Deserciones acumuladas</span><strong>7</strong></div>
+      <div class="row-split"><span class="muted small">Tasa de deserción</span><span class="chip c-warn">3.4%</span></div>
+      <div class="row-split"><span class="muted small">Retención global</span><span class="chip c-ok">${k.retencion}%</span></div>
+    </div>
+  </div>`;
+}
+
+function dashCFP(){
+  const my=DATA.cfps.find(c=>c.name==='CFP San Salvador')||DATA.cfps[0];
+  const parts=DATA.participants.filter(p=>p.cfp==='CFP San Salvador');
+  return `
+  ${head('Dashboard',my.name+' · '+DATA.program.cohort,
+    `<button class="btn btn-primary btn-sm" data-nav="money"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3 8-8M4 4h11M4 9h5M4 14h5M4 19h9"/></svg> Registrar asistencia</button>`)}
+  <div class="grid g4">
+    ${kpi('users','Participantes del centro',fmt(my.part),'Región '+my.region,'')}
+    ${kpi('sera','Asistencia de hoy','96%','118 / 123 presentes','up')}
+    ${kpi('academic','Calificaciones pendientes','2','Módulos por cerrar','')}
+    ${kpi('money','Retención del centro',my.ret+'%','Meta ≥ 80%',my.ret>=80?'up':'down')}
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><div class="card-title"><h3>Asistencia de hoy · ${DATA.week.label}</h3><button class="btn btn-outline btn-sm" data-nav="money">Ver registro</button></div>
+      <table class="tbl"><thead><tr><th>Participante</th>${DATA.week.days.map(d=>`<th style="text-align:center">${d}</th>`).join('')}</tr></thead><tbody>
+      ${DATA.week.rows.map(r=>`<tr><td><div class="person"><span class="av">${r.init}</span><div class="nm">${r.name}</div></div></td>${r.marks.map(m=>`<td style="text-align:center">${mark(m)}</td>`).join('')}</tr>`).join('')}
+      </tbody></table>
+    </div>
+    <div>
+      <div class="card"><div class="card-title"><h3>Jornada formativa</h3><span class="pill-tab">Hoy</span></div>
+        <div class="list-line"><span>Fundamentos digitales · Aula 2</span><span class="muted">08:00</span></div>
+        <div class="list-line"><span>Arquitectura de software · Lab 1</span><span class="muted">10:30</span></div>
+        <div class="list-line"><span>Habilidades blandas · Aula 4</span><span class="muted">14:00</span></div>
+      </div>
+      <div class="card" style="margin-top:16px"><div class="card-title"><h3>Calificaciones por cerrar</h3><button class="btn btn-outline btn-sm" data-nav="academic">Calificar</button></div>
+        <div class="list-line"><span>Gestión de proyectos ágiles</span><span class="chip c-warn">En curso</span></div>
+        <div class="list-line"><span>Habilidades blandas</span><span class="chip c-mut">Pendiente</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px"><div class="card-title"><h3>Participantes del centro</h3><button class="btn btn-outline btn-sm" data-nav="users">Ver todos</button></div>
+    <table class="tbl"><thead><tr><th>Participante</th><th>Fase PATH</th><th>Asistencia</th><th>Nota</th><th>Estado</th></tr></thead><tbody>
+    ${parts.map(p=>`<tr class="clickable" data-participant="${p.id}">
+      <td><div class="person"><span class="av">${p.init}</span><div><div class="nm">${p.name}</div><div class="uid">${p.id}</div></div></div></td>
+      <td>${p.phase==='—'?'<span class="muted">—</span>':`<span class="pill-tab">${p.phase}</span>`}</td>
+      <td><div style="display:flex;align-items:center;gap:8px"><div class="pbar ${p.att<70?'red':''}" style="width:60px"><span style="width:${p.att}%"></span></div>${p.att}%</div></td>
+      <td>${p.grade?`<strong>${p.grade}</strong>`:'<span class="muted">—</span>'}</td>
+      <td>${statusChip(p.status)}</td></tr>`).join('')}
+    </tbody></table>
+  </div>`;
+}
 
 V.seleccion=()=>{
   const c=DATA.participants.find(p=>p.id===S.cand)||DATA.participants[0];
