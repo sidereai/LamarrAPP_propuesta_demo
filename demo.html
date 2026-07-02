@@ -250,6 +250,50 @@ button{font-family:inherit;cursor:pointer}
 .list-line:last-child{border-bottom:none}
 .badge-count{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:99px;background:var(--accent-red);color:#fff;font-size:11px;font-weight:700}
 .pill-tab{display:inline-block;background:var(--sc);color:var(--primary-container);font-weight:600;font-size:12px;padding:3px 10px;border-radius:99px}
+
+/* ---------- DARK THEME ---------- */
+[data-theme=dark]{
+  --surface:#0f1420;--surface-dim:#0b0f18;--surface-bright:#1a2233;
+  --scl:#151c2b;--scLow:#1a2233;--sc:#1f293b;--scHigh:#263248;--scHighest:#2b3a54;
+  --on-surface:#e6ecf7;--on-surface-variant:#9aa6bf;--inverse-surface:#e6ecf7;--inverse-on-surface:#0f1420;
+  --outline:#5b6478;--outline-variant:#2e3852;
+  --primary:#b6c6f0;--on-primary:#0a1730;--primary-container:#22355a;--on-primary-container:#9db0d6;
+  --background:#0b0f18;
+  --success:#5bd08a;--success-bg:#12291c;--warn:#e0a83a;--warn-bg:#2e2410;
+  --error:#ffb4ab;--error-container:#3a1512;--on-error-container:#ffb4ab;
+  --info-bg:#18233a;--info-fg:#a9c0f0;
+}
+[data-theme=dark] .topbar,[data-theme=dark] .btn-outline,[data-theme=dark] .doc,[data-theme=dark] .cand,[data-theme=dark] .donut .hole{background:var(--scl)}
+[data-theme=dark] #toast{background:#263248;color:#fff}
+[data-theme=dark] .login-card,[data-theme=dark] .login-body,[data-theme=dark] .role-btn{background:#151c2b}
+[data-theme=dark] .role-btn{border-color:var(--outline-variant)}
+[data-theme=dark] .alert.err{background:#2a1412;border-color:#5a2420}
+
+/* ---------- POPOVERS / SEARCH ---------- */
+.topbar .search{position:relative}
+.search-res{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--scl);border:1px solid var(--outline-variant);border-radius:var(--r-lg);box-shadow:0 14px 44px rgba(0,0,0,.20);z-index:70;max-height:360px;overflow:auto;display:none}
+.search-res.on{display:block}
+.search-res .sr{display:flex;gap:10px;align-items:center;padding:9px 12px;cursor:pointer;border-bottom:1px solid var(--outline-variant)}
+.search-res .sr:last-child{border-bottom:none}
+.search-res .sr:hover{background:var(--scLow)}
+.dd{position:relative;display:flex}
+.dd-panel{position:absolute;top:calc(100% + 10px);right:0;width:326px;background:var(--scl);border:1px solid var(--outline-variant);border-radius:var(--r-lg);box-shadow:0 14px 44px rgba(0,0,0,.20);z-index:70;overflow:hidden;display:none}
+.dd-panel.on{display:block}
+.dd-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--outline-variant);font-size:13px;font-weight:700}
+.dd-item{display:flex;gap:11px;align-items:flex-start;padding:12px 14px;border-bottom:1px solid var(--outline-variant);cursor:pointer}
+.dd-item:last-child{border-bottom:none}
+.dd-item:hover{background:var(--scLow)}
+.dd-item .di{margin-top:1px;flex:0 0 auto}
+.dd-item h4{font-size:13px}
+.dd-item p{font-size:12px;color:var(--on-surface-variant);margin-top:2px}
+
+/* ---------- FILTER TOOLBAR ---------- */
+.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.toolbar input{padding:9px 12px;border:1px solid var(--outline-variant);border-radius:var(--r);font-family:inherit;font-size:14px;outline:none;background:var(--scl);color:var(--on-surface);min-width:230px;flex:1;max-width:320px}
+.toolbar input:focus{border-color:var(--primary-container);box-shadow:0 0 0 2px var(--scHigh)}
+.fbtn{padding:6px 13px;border-radius:var(--r-full);border:1px solid var(--outline-variant);background:var(--scl);font-size:13px;font-weight:600;color:var(--on-surface-variant)}
+.fbtn:hover{border-color:var(--primary-container)}
+.fbtn.on{background:var(--primary-container);color:#fff;border-color:var(--primary-container)}
 </style>
 </head>
 <body>
@@ -302,9 +346,13 @@ button{font-family:inherit;cursor:pointer}
 
   <header class="topbar">
     <button class="iconbtn hamb" id="hamb"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
-    <div class="search"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg><input placeholder="Buscar participantes, eventos, documentos…" /></div>
+    <div class="search"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg><input id="globalSearch" autocomplete="off" placeholder="Buscar participantes, eventos, documentos…" /><div class="search-res" id="searchRes"></div></div>
     <div class="tb-right">
-      <button class="iconbtn"><span class="badge"></span><svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1112 0c0 7 3 9 3 9H3s3-2 3-9M10 21a2 2 0 004 0"/></svg></button>
+      <button class="iconbtn" data-action="theme" id="themeBtn" title="Cambiar tema"></button>
+      <div class="dd">
+        <button class="iconbtn" data-action="notif-toggle" title="Notificaciones"><span class="badge"></span><svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1112 0c0 7 3 9 3 9H3s3-2 3-9M10 21a2 2 0 004 0"/></svg></button>
+        <div class="dd-panel" id="notifPanel"></div>
+      </div>
       <button class="iconbtn"><svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg></button>
       <div class="role-switch">
         <svg width="15" height="15" fill="none" stroke="var(--primary-container)" stroke-width="2" viewBox="0 0 24 24"><path d="M8 3v4M16 3v4M4 11h16M5 7h14v13H5z"/></svg>
@@ -387,7 +435,13 @@ const DATA = {
     {part:'Elena Rostova', company:'—', role:'En intermediación', status:'Gestión', months:'—'},
     {part:'Roberto Carlos', company:'Webly Studio', role:'Frontend', status:'Ascenso', months:'6 meses'},
   ],
-  pathPhases:['Selección','Activación','Mentoreo','Alineación','Transformación','Expansión']
+  pathPhases:['Selección','Activación','Mentoreo','Alineación','Transformación','Expansión'],
+  notifications:[
+    {t:'err',h:'Inasistencia crítica',p:'María López registra >3 faltas consecutivas.',nav:'money'},
+    {t:'err',h:'Doble pago detectado',p:'Juan Pérez en dos sedes el 08/10 — conciliar.',nav:'money'},
+    {t:'',h:'Presupuesto de viáticos',p:'Semana 41 al 90% del techo asignado.',nav:'money'},
+    {t:'',h:'IP-17 generado',p:'Alerta temprana de deserción enviada al Operador.',nav:'sera'}
+  ]
 };
 
 /* ============ MENÚS POR ROL ============ */
@@ -443,7 +497,7 @@ V.dashboard=()=>{
   const k=DATA.kpis;
   return `
   ${head('Dashboard',S.role==='EF'?'Vista global · '+DATA.program.cohort:'Panel operativo · '+DATA.program.cohort,
-    `<button class="btn btn-outline btn-sm" data-action="toast" data-msg="Reporte generado (demo)"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg> Exportar informe</button>`)}
+    `<button class="btn btn-outline btn-sm" data-action="dl-participants"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg> Exportar informe</button>`)}
   <div class="grid g4">
     ${kpi('users','Participantes activos',fmt(k.matriculados),'+12% vs cohorte previa','up')}
     ${kpi('sera','Tasa de retención',k.retencion+'%','Meta ≥ 80%','up')}
@@ -521,11 +575,20 @@ V.users=()=>{
   if(S.role==='Participante'){ S.pid='EF-0492'; return participantDetail(); }
   return `
   ${head('Participantes','Expediente único de cada participante del programa.',
-    `<button class="btn btn-primary btn-sm" data-nav="live"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Nuevo enrolamiento</button>`)}
+    `<button class="btn btn-outline btn-sm" data-action="dl-participants"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg> Exportar CSV</button>
+     <button class="btn btn-primary btn-sm" data-nav="live"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Nuevo enrolamiento</button>`)}
+  <div class="toolbar">
+    <input id="pSearch" autocomplete="off" placeholder="Filtrar por nombre, ID o CFP…">
+    <button class="fbtn on" data-pfilter="all">Todos</button>
+    <button class="fbtn" data-pfilter="Activo">Activos</button>
+    <button class="fbtn" data-pfilter="Alerta">Alerta</button>
+    <button class="fbtn" data-pfilter="Riesgo">Riesgo</button>
+    <button class="fbtn" data-pfilter="Rechazado">Rechazados</button>
+  </div>
   <div class="card pad0">
     <table class="tbl"><thead><tr><th>Participante</th><th>CFP</th><th>Fase PATH</th><th>Asistencia</th><th>Nota</th><th>Estado</th></tr></thead><tbody>
     ${DATA.participants.map(p=>`
-      <tr class="clickable" data-participant="${p.id}">
+      <tr class="clickable" data-participant="${p.id}" data-status="${p.status}" data-search="${(p.name+' '+p.id+' '+p.cfp).toLowerCase()}">
         <td><div class="person"><span class="av">${p.init}</span><div><div class="nm">${p.name}</div><div class="uid">${p.id}</div></div></div></td>
         <td class="muted">${p.cfp}</td>
         <td>${p.phase==='—'?'<span class="muted">—</span>':`<span class="pill-tab">${p.phase}</span>`}</td>
@@ -616,7 +679,7 @@ V.money=()=>{
   const w=DATA.week;
   return `
   ${head(S.role==='CFP'?'Eventos y Asistencia':'Asistencia y Viáticos','Jornada Formativa Q3 · '+w.label,
-    `<button class="btn btn-outline btn-sm" data-action="toast" data-msg="CSV exportado (demo)">Exportar CSV</button>
+    `<button class="btn btn-outline btn-sm" data-action="dl-attendance">Exportar CSV</button>
      <button class="btn btn-primary btn-sm" data-action="toast" data-msg="Reporte de desembolso generado y enviado a QA">Generar reporte de desembolso</button>`)}
   <div class="grid g3">
     ${kpi('money','Total a pagar (semana)','$'+fmt(DATA.kpis.viaticoSemana),'+12% vs semana anterior','up')}
@@ -717,7 +780,7 @@ V.job=()=>`
 
 V.sera=()=>`
   ${head('Módulo SERA EF · Indicadores','Medición automatizada de los indicadores del Marco Lógico para el donante.',
-    `<button class="btn btn-outline btn-sm" data-action="toast" data-msg="Indicadores exportados (Excel)">Exportar indicadores</button>`)}
+    `<button class="btn btn-outline btn-sm" data-action="dl-sera">Exportar indicadores</button>`)}
   <div class="grid g3">
     ${DATA.indicators.map(i=>`<div class="card"><div class="card-title"><h3 style="font-size:14px">${i.name}</h3><span class="pill-tab">${i.src}</span></div>
       <div class="kpi"><div class="val">${i.val}</div><div class="lbl">${i.meta}</div>
@@ -870,32 +933,108 @@ function setView(v){
   // guard: if role has no access to view, go dashboard
   const allowed=MENUS[S.role].filter(m=>m[0]!=='sec').map(m=>m[2]);
   if(!allowed.includes(v) && v!=='users') { v='dashboard'; }
-  S.view=v; if(v!=='users') S.pid=null;
+  S.view=v; S.pid=null;
   closeSidebar(); render();
 }
 
 /* ============ EVENTOS ============ */
 document.addEventListener('click',(e)=>{
+  if(!e.target.closest('.dd')) closeNotif();
+  if(!e.target.closest('.search')) closeSearch();
   const roleBtn=e.target.closest('[data-role]');
   if(roleBtn){ login(roleBtn.dataset.role); return; }
-  const t=e.target.closest('[data-nav],[data-action],[data-participant],[data-candidate],[data-ptab]');
+  const t=e.target.closest('[data-nav],[data-action],[data-participant],[data-candidate],[data-ptab],[data-pfilter],[data-search-open],[data-notif]');
   if(!t) return;
   if(t.dataset.nav!==undefined){ setView(t.dataset.nav); return; }
+  if(t.dataset.searchOpen!==undefined){ openExpediente(t.dataset.searchOpen); return; }
+  if(t.dataset.notif!==undefined){ setView(t.dataset.notif); closeNotif(); return; }
+  if(t.dataset.pfilter!==undefined){ document.querySelectorAll('[data-pfilter]').forEach(b=>b.classList.toggle('on',b===t)); applyUserFilter(); return; }
   if(t.dataset.participant!==undefined){ S.pid=t.dataset.participant; S.view='users'; S.ptab='path'; render(); return; }
   if(t.dataset.candidate!==undefined){ S.cand=t.dataset.candidate; render(); return; }
   if(t.dataset.ptab!==undefined){ S.ptab=t.dataset.ptab; render(); return; }
   const a=t.dataset.action;
   if(a==='toast'){ toast(t.dataset.msg||'Acción realizada (demo)'); return; }
+  if(a==='theme'){ toggleTheme(); return; }
+  if(a==='notif-toggle'){ const p=$('#notifPanel'); if(p) p.classList.toggle('on'); return; }
   if(a==='logout'){ logout(); return; }
-  if(a==='approve'){ toast('Postulante aprobado a la siguiente etapa'); return; }
-  if(a==='reject'){ toast('Postulante rechazado — registro conservado'); return; }
+  if(a==='approve'){ approveCand(t.dataset.id); return; }
+  if(a==='reject'){ rejectCand(t.dataset.id); return; }
+  if(a==='dl-participants'){ dlParticipants(); return; }
+  if(a==='dl-attendance'){ dlAttendance(); return; }
+  if(a==='dl-sera'){ dlSera(); return; }
   if(a==='enroll-next'){ enrollNext(); return; }
   if(a==='enroll-prev'){ S.enroll=Math.max(1,S.enroll-1); render(); return; }
-  if(a==='liveness'){ S.enrollData.live=false; render(); const f=$('#face'); setTimeout(()=>{S.enrollData.live=true; render(); toast('Prueba de vida verificada localmente · 99.2%');},1600); return; }
+  if(a==='liveness'){ S.enrollData.live=false; render(); setTimeout(()=>{S.enrollData.live=true; render(); toast('Prueba de vida verificada localmente · 99.2%');},1600); return; }
   if(a==='ocr'){ const nm=$('#enName'); S.enrollData.name=(nm&&nm.value.trim())||'Nuevo Participante'; S.enrollData.ocr=true; render(); toast('Documento leído localmente (Open OCR)'); return; }
   if(a==='enroll-reset'){ S.enroll=1; S.enrollData={}; render(); return; }
   if(a==='enroll-open'){ addEnrolled(); return; }
 });
+document.addEventListener('input',e=>{ if(e.target && e.target.id==='pSearch') applyUserFilter(); });
+
+/* ---- popovers / búsqueda / filtros ---- */
+function closeNotif(){ const p=$('#notifPanel'); if(p) p.classList.remove('on'); }
+function closeSearch(){ const r=$('#searchRes'); if(r) r.classList.remove('on'); }
+function openExpediente(id){ const gs=$('#globalSearch'); if(gs) gs.value=''; closeSearch(); S.pid=id; S.view='users'; S.ptab='path'; render(); }
+function applyUserFilter(){
+  const s=$('#pSearch'); const q=s?s.value.trim().toLowerCase():'';
+  const fb=document.querySelector('[data-pfilter].on'); const f=fb?fb.dataset.pfilter:'all';
+  document.querySelectorAll('tr[data-participant]').forEach(tr=>{
+    const okS=f==='all'||tr.dataset.status===f;
+    const okQ=!q||(tr.dataset.search||'').includes(q);
+    tr.style.display=(okS&&okQ)?'':'none';
+  });
+}
+function renderNotif(){
+  const p=$('#notifPanel'); if(!p) return;
+  const dangerIc='<svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9l-8 14A2 2 0 004 21h16a2 2 0 001.7-3l-8-14a2 2 0 00-3.4 0z"/></svg>';
+  const infoIc='<svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>';
+  p.innerHTML=`<div class="dd-head"><span>Notificaciones</span><span class="badge-count">${DATA.notifications.length}</span></div>`+
+    DATA.notifications.map(n=>`<div class="dd-item" data-notif="${n.nav}"><span class="di" style="color:${n.t==='err'?'var(--accent-red)':'var(--primary-container)'}">${n.t==='err'?dangerIc:infoIc}</span><div><h4>${n.h}</h4><p>${n.p}</p></div></div>`).join('');
+}
+function initSearch(){
+  const gs=$('#globalSearch'); if(!gs) return;
+  const run=()=>{
+    const q=gs.value.trim().toLowerCase(); const res=$('#searchRes'); if(!res) return;
+    if(!q){ closeSearch(); res.innerHTML=''; return; }
+    const hits=DATA.participants.filter(p=>(p.name+' '+p.id+' '+p.role+' '+p.cfp).toLowerCase().includes(q)).slice(0,7);
+    res.innerHTML=hits.length
+      ? hits.map(p=>`<div class="sr" data-search-open="${p.id}"><span class="av">${p.init}</span><div style="flex:1"><div class="nm">${p.name}</div><div class="uid">${p.id} · ${p.cfp}</div></div>${statusChip(p.status)}</div>`).join('')
+      : `<div class="sr" style="cursor:default"><span class="muted small">Sin resultados para "${gs.value.trim()}"</span></div>`;
+    res.classList.add('on');
+  };
+  gs.addEventListener('input',run);
+  gs.addEventListener('focus',()=>{ if(gs.value.trim()) run(); });
+}
+
+/* ---- selección: estado real ---- */
+const SEL_STAGES=['Preselección documental','Pruebas Psicométricas','Entrevista Técnica','Comité de Selección','Matriculado'];
+function approveCand(id){
+  const p=DATA.participants.find(x=>x.id===id); if(!p) return;
+  const i=SEL_STAGES.indexOf(p.selStage);
+  p.selStage=(i>=0 && i<SEL_STAGES.length-1)?SEL_STAGES[i+1]:'Matriculado';
+  if(p.selStage==='Matriculado'){ p.selStatus='ok'; if(p.status==='Rechazado') p.status='Activo'; }
+  else p.selStatus='proceso';
+  render(); toast('Aprobado → '+p.selStage);
+}
+function rejectCand(id){
+  const p=DATA.participants.find(x=>x.id===id); if(!p) return;
+  p.selStatus='rechazado'; p.status='Rechazado';
+  render(); toast('Postulante rechazado — registro conservado');
+}
+
+/* ---- exportaciones (descarga real) ---- */
+function downloadFile(name,content,mime){ const b=new Blob([content],{type:mime||'text/plain;charset=utf-8'}); const u=URL.createObjectURL(b); const a=document.createElement('a'); a.href=u; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),1500); }
+function toCSV(rows){ return '﻿'+rows.map(r=>r.map(c=>{ c=(''+c).replace(/"/g,'""'); return /[",\n]/.test(c)?'"'+c+'"':c; }).join(',')).join('\r\n'); }
+function dlParticipants(){ const rows=[['ID','Nombre','CFP','Fase PATH','Asistencia','Nota','Estado'],...DATA.participants.map(p=>[p.id,p.name,p.cfp,p.phase,p.att+'%',p.grade,p.status])]; downloadFile('participantes_lamarr.csv',toCSV(rows),'text/csv'); toast('participantes_lamarr.csv descargado'); }
+function dlAttendance(){ const w=DATA.week; const lbl={p:'Presente',a:'Ausente',l:'Tarde'}; const rows=[['Participante','ID',...w.days.map((d,i)=>d+(6+i)),'Viatico','Alerta'],...w.rows.map(r=>[r.name,r.id,...r.marks.map(m=>lbl[m]||m),'$'+r.dev,r.flag||''])]; downloadFile('asistencia_semana41.csv',toCSV(rows),'text/csv'); toast('Registro de asistencia descargado'); }
+function dlSera(){ const rows=[['Indicador','Valor','Meta','Avance','Fuente'],...DATA.indicators.map(i=>[i.name,i.val,i.meta,i.p+'%',i.src])]; downloadFile('indicadores_sera_ef.csv',toCSV(rows),'text/csv'); toast('indicadores_sera_ef.csv descargado'); }
+
+/* ---- tema claro / oscuro ---- */
+const SUN='<svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>';
+const MOON='<svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>';
+function syncThemeIcon(t){ const b=$('#themeBtn'); if(b) b.innerHTML=(t==='dark')?SUN:MOON; }
+function toggleTheme(){ const t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'; document.documentElement.setAttribute('data-theme',t); try{localStorage.setItem('lamarr_theme',t);}catch(e){} syncThemeIcon(t); toast(t==='dark'?'Modo oscuro activado':'Modo claro activado'); }
+function initTheme(){ let t='light'; try{t=localStorage.getItem('lamarr_theme')||'light';}catch(e){} document.documentElement.setAttribute('data-theme',t); syncThemeIcon(t); }
 function enrollNext(){
   if(S.enroll===1){ const c1=$('#cons1'),c2=$('#cons2'); if(!(c1&&c1.checked&&c2&&c2.checked)){ toast('Debes aceptar el consentimiento para continuar'); return; } }
   if(S.enroll===2 && !S.enrollData.live){ toast('Completa la prueba de vida'); return; }
@@ -924,6 +1063,11 @@ $('#roleSel').addEventListener('change',e=>{ S.role=e.target.value; S.view='dash
 function closeSidebar(){ $('#sidebar').classList.remove('open'); $('#scrim').classList.remove('on'); }
 $('#hamb').addEventListener('click',()=>{ $('#sidebar').classList.toggle('open'); $('#scrim').classList.toggle('on'); });
 $('#scrim').addEventListener('click',closeSidebar);
+
+/* ---- init ---- */
+initTheme();
+renderNotif();
+initSearch();
 </script>
 </body>
 </html>
