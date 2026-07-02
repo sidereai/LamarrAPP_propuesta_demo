@@ -193,13 +193,16 @@ h1,h2,h3,h4 { color: var(--chart-5); font-weight: 800; letter-spacing: -0.02em; 
 .tag { font-size: .76rem; font-weight: 500; background: var(--muted); border: 1px solid var(--border); color: var(--secondary-foreground); padding: 5px 11px; border-radius: 999px; }
 .tg summary .ttl { flex: 1; }
 .tg summary .wk { flex: 0 0 auto; font-size: .72rem; font-weight: 700; background: var(--accent); color: var(--chart-4); border: 1px solid #bcd3f7; padding: 3px 10px; border-radius: 999px; letter-spacing: .01em; white-space: nowrap; }
-.sfoot { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border); }
-.sfl { display: block; font-size: .72rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--chart-4); margin-bottom: 8px; }
-.spr { display: flex; gap: 10px; align-items: baseline; margin-bottom: 7px; }
+.sfoot { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
+.sfl { display: block; font-size: .72rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--chart-4); margin-bottom: 6px; }
+.spr { display: flex; gap: 10px; align-items: baseline; margin-bottom: 4px; }
 .spr .sw { flex: 0 0 auto; min-width: 82px; font-weight: 700; color: var(--chart-5); font-size: .76rem; background: var(--muted); border: 1px solid var(--border); padding: 2px 8px; border-radius: 6px; text-align: center; }
-.spr .sf { font-size: .85rem; color: var(--muted-foreground); }
-.plan-note { margin-top: 14px; font-size: .8rem; color: var(--muted-foreground); line-height: 1.55; }
+.spr .sf { font-size: .84rem; color: var(--muted-foreground); line-height: 1.35; }
+.plan-note { margin-top: 8px; font-size: .76rem; color: var(--muted-foreground); line-height: 1.5; }
 .plan-note strong { color: var(--chart-5); }
+.toggles { gap: 8px; }
+.toggles .tg summary { padding: 12px 18px; }
+.toggles .tg .body { padding-bottom: 13px; }
 @media (max-width: 520px) { .spr { flex-wrap: wrap; gap: 4px; } .tg summary .wk { font-size: .66rem; padding: 2px 7px; } }
 
 /* price band */
@@ -373,12 +376,6 @@ h1,h2,h3,h4 { color: var(--chart-5); font-weight: 800; letter-spacing: -0.02em; 
           <summary><span class="tnum">1</span> <span class="ttl">MVP — Sprints 1–4</span> <span class="wk">Sem. 3–10</span> <span class="plus">+</span></summary>
           <div class="body">
             <p>Habilita la operación crítica del programa desde la primera fase.</p>
-            <ul>
-              <li>Enrolamiento con prueba de vida y consentimiento</li>
-              <li>Proceso de selección multietapa y gestión de estados</li>
-              <li>Motor de viáticos: cálculo semanal, anti-duplicidad y conciliación</li>
-              <li>Administración de catálogos, roles, parámetros y auditoría base</li>
-            </ul>
             <div class="sfoot">
               <span class="sfl">Calendario por sprint</span>
               <div class="spr"><span class="sw">Sem. 3–4</span><span class="sf">Sprint 1 · Enrolamiento con prueba de vida y consentimiento</span></div>
