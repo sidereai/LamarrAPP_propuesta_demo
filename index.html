@@ -217,6 +217,7 @@ h1,h2,h3,h4 { color: var(--chart-5); font-weight: 800; letter-spacing: -0.02em; 
 .bd .row h4 { font-size: .9rem; }
 .bd .row .amt { font-weight: 800; color: var(--chart-5); font-size: .95rem; }
 .bd .row .pct { font-size: .76rem; color: var(--primary); font-weight: 700; min-width: 44px; text-align: right; }
+.bd .row .rwk { display: inline-block; margin-top: 3px; font-size: .7rem; font-weight: 700; color: var(--chart-4); background: var(--accent); border-radius: 6px; padding: 1px 7px; }
 
 /* sla */
 .sla4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
@@ -772,10 +773,10 @@ h1,h2,h3,h4 { color: var(--chart-5); font-weight: 800; letter-spacing: -0.02em; 
           <p class="sub2">Exento de IVA cuando aplique, dentro del techo de USD 42.000. Anticipo de movilización del 35% y 65% sujeto a la aceptación de cada entrega.</p>
         </div>
         <div class="bd">
-          <div class="row"><h4>Fase 1 · Descubrimiento (Sprint 0)</h4><span class="amt">USD 3.000</span><span class="pct">7.7%</span></div>
-          <div class="row"><h4>Fase 2 · Desarrollo (Sprints 1–7)</h4><span class="amt">USD 26.600</span><span class="pct">67.9%</span></div>
-          <div class="row"><h4>Fase 3 · Implementación y traspaso</h4><span class="amt">USD 2.400</span><span class="pct">6.1%</span></div>
-          <div class="row"><h4>Fase 4 · Acompañamiento (6 meses)</h4><span class="amt">USD 7.200</span><span class="pct">18.4%</span></div>
+          <div class="row"><div><h4>Fase 1 · Descubrimiento (Sprint 0)</h4><span class="rwk">Sem. 1–2</span></div><span class="amt">USD 3.000</span><span class="pct">7.7%</span></div>
+          <div class="row"><div><h4>Fase 2 · Desarrollo (Sprints 1–7)</h4><span class="rwk">Sem. 3–16</span></div><span class="amt">USD 26.600</span><span class="pct">67.9%</span></div>
+          <div class="row"><div><h4>Fase 3 · Implementación y traspaso</h4><span class="rwk">Sem. 17–18</span></div><span class="amt">USD 2.400</span><span class="pct">6.1%</span></div>
+          <div class="row"><div><h4>Fase 4 · Acompañamiento (6 meses)</h4><span class="rwk">Meses 5–10</span></div><span class="amt">USD 7.200</span><span class="pct">18.4%</span></div>
         </div>
       </div>
       <div class="toggles fx d3">
