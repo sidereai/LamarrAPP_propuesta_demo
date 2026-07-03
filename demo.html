@@ -1180,11 +1180,22 @@ V.live=()=>{
         <div style="margin-top:12px">
           ${alert('','Protección reforzada de menores','Se requiere el consentimiento del adulto responsable (representante legal) antes de habilitar la prueba de vida del menor — Épica 1 · Ley de Protección de Datos Personales de El Salvador.')}
           ${gok?`<div class="chip c-ok" style="margin-top:4px"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24" style="margin-right:4px"><path d="M5 12l4 4 10-11"/></svg>Consentimiento de ${S.enrollData.guardianName||'el adulto responsable'} registrado · prueba de vida desbloqueada</div>`:`
-          <div class="grid g2" style="margin-top:8px">
-            <div class="field"><label>Nombre del adulto responsable</label><input id="gName" placeholder="Nombre completo"></div>
-            <div class="field"><label>Parentesco / relación</label><input id="gRel" placeholder="Madre, padre o tutor legal"></div>
+          <div class="sec-title" style="margin:10px 0 8px">Verificación del adulto responsable</div>
+          <div class="grid g2">
+            <div style="border:1px solid var(--outline-variant);border-radius:var(--r-md);padding:11px 13px;display:flex;align-items:center;justify-content:space-between;gap:10px">
+              <div><div style="font-weight:600;font-size:14px">Prueba de vida</div><div class="muted small">Open Liveness · local</div></div>
+              ${S.enrollData.guardianLive?`<span class="chip c-ok"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24" style="margin-right:4px"><path d="M5 12l4 4 10-11"/></svg>Verificada</span>`:`<button class="btn btn-outline btn-sm" data-action="guardian-live">Iniciar</button>`}
+            </div>
+            <div style="border:1px solid var(--outline-variant);border-radius:var(--r-md);padding:11px 13px;display:flex;align-items:center;justify-content:space-between;gap:10px">
+              <div><div style="font-weight:600;font-size:14px">Documento del responsable</div><div class="muted small">Open OCR · local</div></div>
+              ${S.enrollData.guardianDoc?`<span class="chip c-ok"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24" style="margin-right:4px"><path d="M5 12l4 4 10-11"/></svg>Leído</span>`:`<button class="btn btn-outline btn-sm" data-action="guardian-doc">Capturar</button>`}
+            </div>
           </div>
-          <label class="check-line"><input type="checkbox" id="gConsent"> Autorizo, como representante legal, la prueba de vida y el tratamiento de datos del menor.</label>
+          <div class="grid g2" style="margin-top:10px">
+            <div class="field"><label>Nombre del adulto responsable</label><input id="gName" value="${S.enrollData.guardianName||''}" placeholder="Nombre completo"></div>
+            <div class="field"><label>Parentesco / relación</label><input id="gRel" value="${S.enrollData.guardianRel||''}" placeholder="Madre, padre o tutor legal"></div>
+          </div>
+          <label class="check-line"><input type="checkbox" id="gConsent" ${S.enrollData.gConsent?'checked':''}> Autorizo, como representante legal, la prueba de vida y el tratamiento de datos del menor.</label>
           <div style="margin-top:12px"><button class="btn btn-primary btn-sm" data-action="guardian-consent">Registrar consentimiento y desbloquear</button></div>
         `}
         </div>`:''}
@@ -1289,13 +1300,16 @@ document.addEventListener('click',(e)=>{
   if(a==='enroll-next'){ enrollNext(); return; }
   if(a==='enroll-prev'){ S.enroll=Math.max(1,S.enroll-1); render(); return; }
   if(a==='liveness'){ if(S.enrollData.minor && !S.enrollData.guardianOk){ toast('Primero registra el consentimiento del adulto responsable'); return; } S.enrollData.live=false; render(); setTimeout(()=>{S.enrollData.live=true; render(); toast('Prueba de vida verificada localmente · 99.2%');},1600); return; }
-  if(a==='guardian-consent'){ const gn=$('#gName'), gc=$('#gConsent'); if(!(gn&&gn.value.trim())){ toast('Ingresa el nombre del adulto responsable'); return; } if(!(gc&&gc.checked)){ toast('Marca la autorización del representante legal'); return; } S.enrollData.guardianName=gn.value.trim(); S.enrollData.guardianRel=($('#gRel')&&$('#gRel').value.trim())||''; S.enrollData.guardianOk=true; render(); toast('Consentimiento del adulto registrado · prueba de vida desbloqueada'); return; }
+  if(a==='guardian-live'){ captureGuardian(); toast('Verificando prueba de vida del adulto…'); setTimeout(()=>{ S.enrollData.guardianLive=true; render(); toast('Prueba de vida del adulto verificada · 99.1%'); },1200); return; }
+  if(a==='guardian-doc'){ captureGuardian(); S.enrollData.guardianDoc=true; render(); toast('Documento del adulto responsable leído (Open OCR)'); return; }
+  if(a==='guardian-consent'){ captureGuardian(); if(!(S.enrollData.guardianName||'').trim()){ toast('Ingresa el nombre del adulto responsable'); return; } if(!S.enrollData.guardianLive){ toast('Completa la prueba de vida del adulto responsable'); return; } if(!S.enrollData.guardianDoc){ toast('Captura el documento del adulto responsable'); return; } if(!S.enrollData.gConsent){ toast('Marca la autorización del representante legal'); return; } S.enrollData.guardianOk=true; render(); toast('Consentimiento del adulto registrado · prueba de vida desbloqueada'); return; }
   if(a==='ocr'){ const nm=$('#enName'); S.enrollData.name=(nm&&nm.value.trim())||'Nuevo Participante'; S.enrollData.ocr=true; render(); toast('Documento leído localmente (Open OCR)'); return; }
   if(a==='enroll-reset'){ S.enroll=1; S.enrollData={}; render(); return; }
   if(a==='enroll-open'){ addEnrolled(); return; }
 });
 document.addEventListener('input',e=>{ if(e.target && e.target.id==='pSearch') applyUserFilter(); if(e.target && e.target.id==='paramSearch') applyParamFilter(); });
-document.addEventListener('change',e=>{ if(e.target && e.target.id==='isMinor'){ S.enrollData.minor=e.target.checked; if(!e.target.checked) S.enrollData.guardianOk=false; render(); } });
+document.addEventListener('change',e=>{ if(e.target && e.target.id==='isMinor'){ S.enrollData.minor=e.target.checked; if(!e.target.checked){ S.enrollData.guardianOk=false; S.enrollData.guardianLive=false; S.enrollData.guardianDoc=false; S.enrollData.gConsent=false; } render(); } });
+function captureGuardian(){ const gn=$('#gName'),gr=$('#gRel'),gc=$('#gConsent'); if(gn) S.enrollData.guardianName=gn.value; if(gr) S.enrollData.guardianRel=gr.value; if(gc) S.enrollData.gConsent=gc.checked; }
 function applyParamFilter(){
   const s=document.getElementById('paramSearch'); const q=s?s.value.trim().toLowerCase():'';
   const fb=document.querySelector('[data-dfilter].on'); const f=fb?fb.dataset.dfilter:'all';
